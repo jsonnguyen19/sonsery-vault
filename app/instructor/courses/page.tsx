@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { adminDb } from "@/lib/firebase-admin";
+import type { Course } from "@/lib/types/course";
 
 // Server Component: Fetch trực tiếp dữ liệu từ Firestore qua Admin SDK
 async function getCourses() {
@@ -8,7 +9,7 @@ async function getCourses() {
     return snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    }));
+    })) as Course[];
   } catch (error) {
     console.error("Lỗi lấy danh sách khóa học:", error);
     return [];
@@ -48,7 +49,7 @@ export default async function InstructorCoursesPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {courses.map((course: any) => (
+            {courses.map((course) => (
               <div
                 key={course.id}
                 className="group relative bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-slate-300 transition flex flex-col justify-between"

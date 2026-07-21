@@ -18,8 +18,9 @@ export async function GET(
     }
 
     return NextResponse.json({ id: doc.id, ...doc.data() });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Lỗi không xác định';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -48,8 +49,9 @@ export async function PUT(
     });
 
     return NextResponse.json({ message: "Cập nhật thành công!" });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Lỗi không xác định';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -63,7 +65,8 @@ export async function DELETE(
     await adminDb.collection("courses").doc(id).delete();
 
     return NextResponse.json({ message: "Xóa khóa học thành công!" });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Lỗi không xác định';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

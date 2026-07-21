@@ -35,10 +35,11 @@ export async function POST(req: Request) {
       { message: "Tạo khóa học thành công!", id: docRef.id, slug },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error("Lỗi khi tạo khóa học:", error);
+    const message = error instanceof Error ? error.message : "Lỗi máy chủ nội bộ";
     return NextResponse.json(
-      { error: error.message || "Lỗi máy chủ nội bộ" },
+      { error: message },
       { status: 500 }
     );
   }

@@ -52,7 +52,7 @@ export default function CreateCoursePage() {
   const handleLessonChange = (
     index: number,
     field: keyof LessonInput,
-    value: any
+    value: string | boolean | File | null
   ) => {
     const updated = [...lessons];
     updated[index] = { ...updated[index], [field]: value };
@@ -60,7 +60,7 @@ export default function CreateCoursePage() {
   };
 
   // Helper upload file sang Cloudflare R2
-  const uploadFileToR2 = async (file: File, folder: string) => {
+  const uploadFileToR2 = async (file: File) => {
       const res = await fetch("/api/upload/presigned-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -98,7 +98,7 @@ export default function CreateCoursePage() {
     try {
       // 1. Upload thumbnail
       setProgressText("Đang tải ảnh thu nhỏ lên R2...");
-      const thumbnailKey = await uploadFileToR2(thumbnailFile, "thumbnails");
+      const thumbnailKey = await uploadFileToR2(thumbnailFile);
 
       // 2. Upload video bài học song song (Parallel Uploads)
       setProgressText("Đang tải các video bài học lên R2...");
@@ -106,7 +106,7 @@ export default function CreateCoursePage() {
         lessons.map(async (lesson, index) => {
           let videoKey = "";
           if (lesson.file) {
-            videoKey = await uploadFileToR2(lesson.file, "videos");
+            videoKey = await uploadFileToR2(lesson.file);
           }
 
           return {
@@ -144,9 +144,10 @@ export default function CreateCoursePage() {
 
       alert("Tạo khóa học thành công!");
       router.push("/instructor/courses");
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
-      alert(error.message || "Đã xảy ra lỗi khi tạo khóa học!");
+      const message = error instanceof Error ? error.message : "Đã xảy ra lỗi khi tạo khóa học!";
+      alert(message);
     } finally {
       setLoading(false);
       setProgressText("");

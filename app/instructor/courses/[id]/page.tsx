@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { adminDb } from "@/lib/firebase-admin";
+import type { Course } from "@/lib/types/course";
 
 async function getCourse(id: string) {
   try {
     const doc = await adminDb.collection("courses").doc(id).get();
     if (!doc.exists) return null;
-    return { id: doc.id, ...doc.data() } as any;
-  } catch (error) {
+    return { id: doc.id, ...doc.data() } as Course;
+  } catch {
     return null;
   }
 }
@@ -74,7 +75,7 @@ export default async function CourseDetailPage({
             <p className="text-sm text-slate-500 py-4">Khóa học này chưa có bài học nào.</p>
           ) : (
             <div className="divide-y divide-slate-100">
-              {course.lessons.map((lesson: any, index: number) => (
+              {course.lessons.map((lesson, index: number) => (
                 <div key={lesson.id || index} className="py-3 flex items-center justify-between">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">

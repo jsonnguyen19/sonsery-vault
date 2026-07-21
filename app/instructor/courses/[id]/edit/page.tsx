@@ -54,7 +54,7 @@ export default function EditCoursePage({
 
         if (data.lessons && Array.isArray(data.lessons)) {
           setLessons(
-            data.lessons.map((l: any) => ({
+            data.lessons.map((l: { id: string; title: string; description: string; isFreePreview: boolean; videoKey: string }) => ({
               id: l.id,
               title: l.title || "",
               description: l.description || "",
@@ -121,7 +121,7 @@ export default function EditCoursePage({
   const handleLessonChange = (
     index: number,
     field: keyof LessonInput,
-    value: any
+    value: string | boolean | File | null | undefined
   ) => {
     setLessons((prev) => {
       const updated = [...prev];
@@ -216,9 +216,10 @@ export default function EditCoursePage({
 
       alert("Cập nhật khóa học và danh sách bài học thành công!");
       router.push(`/instructor/courses/${id}`);
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      alert(err.message || "Đã xảy ra lỗi trong quá trình lưu!");
+      const message = err instanceof Error ? err.message : "Đã xảy ra lỗi trong quá trình lưu!";
+      alert(message);
     } finally {
       setSaving(false);
       setProgressText("");
