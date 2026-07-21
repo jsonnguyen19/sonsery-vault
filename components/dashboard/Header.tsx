@@ -4,14 +4,20 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import Avatar from "@/components/ui/Avatar";
 import { LogOut, Settings, User } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { user, logout } = useAuth();
+  const router = useRouter();
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleLogout = async () => {
     try {
+      console.log("[Header] Starting logout...");
       await logout();
+      console.log("[Header] Logout completed, redirecting to login...");
+      // Force redirect with window.location
+      window.location.href = "/login";
     } catch (error) {
       console.error("Logout failed:", error);
     }

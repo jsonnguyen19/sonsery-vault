@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import {
   onIdTokenChanged,
@@ -61,6 +62,7 @@ const clearSessionOnServer = async () => {
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const toast = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole | null>(null);
@@ -107,9 +109,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       console.log("[Client Auth] Logging out...");
       await signOut(auth);
+      console.log("[Client Auth] Firebase signOut completed");
       await fetch("/api/auth/logout", { method: "POST" });
-      console.log("[Client Auth] Logged out successfully");
+      console.log("[Client Auth] Server logout completed");
       toast.success("Logged out successfully");
+      console.log("[Client Auth] Toast shown, will redirect");
     } catch (error) {
       console.error("[Client Auth] Logout error:", error);
       toast.error("Failed to log out");
