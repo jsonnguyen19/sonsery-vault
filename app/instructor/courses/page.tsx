@@ -51,9 +51,13 @@ export default async function InstructorCoursesPage() {
             {courses.map((course: any) => (
               <div
                 key={course.id}
-                className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition"
+                className="group relative bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md hover:border-slate-300 transition flex flex-col justify-between"
               >
-                <div className="p-5 space-y-3">
+                {/* Bọc Link toàn bộ vùng thông tin card */}
+                <Link
+                  href={`/instructor/courses/${course.id}`}
+                  className="p-5 space-y-3 block flex-1"
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 uppercase">
                       {course.status || "Draft"}
@@ -62,12 +66,25 @@ export default async function InstructorCoursesPage() {
                       {course.price ? `${course.price.toLocaleString("vi-VN")} đ` : "Miễn phí"}
                     </span>
                   </div>
-                  <h3 className="font-bold text-slate-900 line-clamp-1">{course.title}</h3>
-                  <p className="text-xs text-slate-500 line-clamp-2">{course.description}</p>
-                  <div className="pt-3 border-t border-slate-100 flex justify-between items-center text-xs text-slate-400">
-                    <span>{course.lessons?.length || 0} bài học</span>
-                    <span>Slug: {course.slug}</span>
-                  </div>
+
+                  <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition line-clamp-1">
+                    {course.title}
+                  </h3>
+
+                  <p className="text-xs text-slate-500 line-clamp-2">
+                    {course.description || "Chưa có mô tả..."}
+                  </p>
+                </Link>
+
+                {/* Footer card + Nút Sửa nhanh */}
+                <div className="px-5 py-3 bg-slate-50/50 border-t border-slate-100 flex justify-between items-center text-xs text-slate-400">
+                  <span>{course.lessons?.length || 0} bài học</span>
+                  <Link
+                    href={`/instructor/courses/${course.id}/edit`}
+                    className="font-medium text-slate-500 hover:text-slate-900 hover:underline relative z-10"
+                  >
+                    Sửa
+                  </Link>
                 </div>
               </div>
             ))}
