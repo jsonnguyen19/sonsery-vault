@@ -10,18 +10,24 @@ import {
 } from "firebase/auth";
 import { useToast } from "@/components/ui/ToastContainer";
 
+import type { UserRole } from "@/lib/types/user";
+
 interface AuthContextType {
   user: User | null;
+  role: UserRole | null;
   loading: boolean;
   logout: () => Promise<void>;
   getIdToken: () => Promise<string | null>;
+  isAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  role: null,
   loading: true,
   logout: async () => {},
   getIdToken: async () => null,
+  isAdmin: false,
 });
 
 const syncSessionWithServer = async (user: User) => {
@@ -57,6 +63,7 @@ const clearSessionOnServer = async () => {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const toast = useToast();
   const [user, setUser] = useState<User | null>(null);
+  const [role, setRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -66,6 +73,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       );
 
       setUser(user);
+
+      // Fetch user role from server
+      if (user) {
+        try {
+          const response = await fetch("/api/auth/check");
+          if (response.ok) {
+            const data = await response.json();
+            setRole(data.role || "user");
+            console.log(`[Client Auth] User role: ${data.role || "user"}`);
+          }
+        } catch (error) {
+          console.error("[Client Auth] Error fetching role:", error);
+          setRole("user");
+        }
+      } else {
+        setRole(null);
+      }
+
       setLoading(false);
 
       if (user) {
@@ -102,8 +127,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const isAdmin = role === "admin";
+
   return (
-    <AuthContext.Provider value={{ user, loading, logout, getIdToken }}>
+    <AuthContext.Provider value={{ user, role, loading, logout, getIdToken, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

@@ -7,7 +7,9 @@ import {
   BookOpen,
   Users,
   Settings,
+  Shield,
 } from "lucide-react";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -16,8 +18,15 @@ const navigation = [
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
+const adminNavigation = [
+  { name: "Admin", href: "/dashboard/admin/users", icon: Shield },
+];
+
 export default function Sidebar() {
   const pathname = usePathname();
+  const { isAdmin } = useAuth();
+
+  const allNavigation = isAdmin ? [...navigation, ...adminNavigation] : navigation;
 
   return (
     <aside className="w-64 bg-gray-900 border-r border-gray-800 h-screen sticky top-0 flex flex-col">
@@ -26,9 +35,10 @@ export default function Sidebar() {
         <p className="text-sm text-gray-400 mt-1">Learning Platform</p>
       </div>
       <nav className="flex-1 p-4 space-y-1">
-        {navigation.map((item) => {
+        {allNavigation.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname?.startsWith(item.href + "/"));
           const Icon = item.icon;
+          const isAdminItem = item.name === "Admin";
           return (
             <Link
               key={item.name}
@@ -36,9 +46,12 @@ export default function Sidebar() {
               className={`
                 flex items-center gap-3 px-4 py-3 rounded-lg transition-colors
                 ${isActive
-                  ? "bg-blue-600 text-white"
+                  ? isAdminItem
+                    ? "bg-purple-600 text-white"
+                    : "bg-blue-600 text-white"
                   : "text-gray-300 hover:bg-gray-800 hover:text-white"
                 }
+                ${isAdminItem && !isActive ? "text-purple-400 hover:text-purple-300" : ""}
               `}
             >
               <Icon className="w-5 h-5" />

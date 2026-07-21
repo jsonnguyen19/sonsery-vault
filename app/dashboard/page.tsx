@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 
 export default function DashboardPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, role } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -64,6 +64,12 @@ export default function DashboardPage() {
             <p className="text-sm text-gray-400">Authentication Provider</p>
             <p className="font-medium text-white">
               {user.providerData[0]?.providerId || "N/A"}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-400">Role</p>
+            <p className="font-medium text-white">
+              {role || "user"}
             </p>
           </div>
         </div>
