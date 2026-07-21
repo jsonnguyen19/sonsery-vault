@@ -30,7 +30,9 @@ export default function FileUploader() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Lấy URL thất bại");
 
-      setStatus("2. Đã có vé! Đang đẩy file trực tiếp từ Browser lên Cloudflare R2...");
+      setStatus(
+        "2. Đã có vé! Đang đẩy file trực tiếp từ Browser lên Cloudflare R2...",
+      );
 
       // 2. Upload TRỰC TIẾP từ Browser lên Cloudflare R2
       const uploadRes = await fetch(data.uploadUrl, {
@@ -45,7 +47,8 @@ export default function FileUploader() {
 
       setStatus(`🎉 Upload thành công! Key trên R2: ${data.key}`);
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Đã có lỗi xảy ra";
+      const errorMessage =
+        err instanceof Error ? err.message : "Đã có lỗi xảy ra";
       console.error(err);
       setStatus(`❌ Lỗi: ${errorMessage}`);
     } finally {

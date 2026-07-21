@@ -3,13 +3,8 @@ packages:
 minimumReleaseAgeExclude:
   - "@aws-sdk/client-s3"
   - "@aws-sdk/s3-request-presigner"
-allowedBuildDependencies:
-  - sharp
-  - "@firebase/util"
-  - protobufjs
-  - unrs-resolver
 allowBuilds:
-  '@firebase/util': false
-  protobufjs: false
-  sharp: false
-  unrs-resolver: false
+  sharp: true
+  "@firebase/util": true
+  protobufjs: true
+  unrs-resolver: true

@@ -4,7 +4,7 @@ import { adminDb } from "@/lib/firebase-admin";
 // GET: Lấy thông tin 1 khóa học
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -13,13 +13,14 @@ export async function GET(
     if (!doc.exists) {
       return NextResponse.json(
         { error: "Không tìm thấy khóa học" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     return NextResponse.json({ id: doc.id, ...doc.data() });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Lỗi không xác định';
+    const message =
+      error instanceof Error ? error.message : "Lỗi không xác định";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
@@ -27,7 +28,7 @@ export async function GET(
 // PUT: Cập nhật khóa học
 export async function PUT(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -39,7 +40,7 @@ export async function PUT(
     if (!doc.exists) {
       return NextResponse.json(
         { error: "Khóa học không tồn tại" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -50,7 +51,8 @@ export async function PUT(
 
     return NextResponse.json({ message: "Cập nhật thành công!" });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Lỗi không xác định';
+    const message =
+      error instanceof Error ? error.message : "Lỗi không xác định";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
@@ -58,7 +60,7 @@ export async function PUT(
 // DELETE: Xóa khóa học
 export async function DELETE(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -66,7 +68,8 @@ export async function DELETE(
 
     return NextResponse.json({ message: "Xóa khóa học thành công!" });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Lỗi không xác định';
+    const message =
+      error instanceof Error ? error.message : "Lỗi không xác định";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

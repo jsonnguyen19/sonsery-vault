@@ -52,7 +52,7 @@ export default function CreateCoursePage() {
   const handleLessonChange = (
     index: number,
     field: keyof LessonInput,
-    value: string | boolean | File | null
+    value: string | boolean | File | null,
   ) => {
     const updated = [...lessons];
     updated[index] = { ...updated[index], [field]: value };
@@ -61,30 +61,30 @@ export default function CreateCoursePage() {
 
   // Helper upload file sang Cloudflare R2
   const uploadFileToR2 = async (file: File) => {
-      const res = await fetch("/api/upload/presigned-url", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          filename: file.name,      // Sửa fileName -> filename
-          contentType: file.type,   // Sửa fileType -> contentType
-        }),
-      });
+    const res = await fetch("/api/upload/presigned-url", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        filename: file.name, // Sửa fileName -> filename
+        contentType: file.type, // Sửa fileType -> contentType
+      }),
+    });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Không thể lấy URL upload R2");
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Không thể lấy URL upload R2");
 
-      const { uploadUrl, key } = data; // Sửa fileKey -> key
+    const { uploadUrl, key } = data; // Sửa fileKey -> key
 
-      const uploadRes = await fetch(uploadUrl, {
-        method: "PUT",
-        headers: { "Content-Type": file.type },
-        body: file,
-      });
+    const uploadRes = await fetch(uploadUrl, {
+      method: "PUT",
+      headers: { "Content-Type": file.type },
+      body: file,
+    });
 
-      if (!uploadRes.ok) throw new Error(`Lỗi upload file: ${file.name}`);
+    if (!uploadRes.ok) throw new Error(`Lỗi upload file: ${file.name}`);
 
-      return key;
-    };
+    return key;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,7 +118,7 @@ export default function CreateCoursePage() {
             videoKey,
             order: index + 1,
           };
-        })
+        }),
       );
 
       // 3. Gọi API route để lưu vào Firestore
@@ -146,7 +146,10 @@ export default function CreateCoursePage() {
       router.push("/instructor/courses");
     } catch (error) {
       console.error(error);
-      const message = error instanceof Error ? error.message : "Đã xảy ra lỗi khi tạo khóa học!";
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Đã xảy ra lỗi khi tạo khóa học!";
       alert(message);
     } finally {
       setLoading(false);
@@ -160,7 +163,9 @@ export default function CreateCoursePage() {
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-200 pb-5">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Tạo khóa học mới</h1>
+            <h1 className="text-2xl font-bold text-slate-900">
+              Tạo khóa học mới
+            </h1>
             <p className="text-sm text-slate-500 mt-1">
               Điền thông tin và tải nội dung chương trình giảng dạy của bạn
             </p>
@@ -220,7 +225,8 @@ export default function CreateCoursePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Ảnh thu nhỏ (Thumbnail) <span className="text-rose-500">*</span>
+                    Ảnh thu nhỏ (Thumbnail){" "}
+                    <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="file"
@@ -234,7 +240,9 @@ export default function CreateCoursePage() {
 
               {thumbnailPreview && (
                 <div className="mt-3">
-                  <p className="text-xs text-slate-500 mb-2">Xem trước Thumbnail:</p>
+                  <p className="text-xs text-slate-500 mb-2">
+                    Xem trước Thumbnail:
+                  </p>
                   <div className="relative w-48 h-28 rounded-lg overflow-hidden border border-slate-200 bg-slate-100">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -308,7 +316,11 @@ export default function CreateCoursePage() {
                         placeholder="Mô tả nội dung bài học..."
                         value={lesson.description}
                         onChange={(e) =>
-                          handleLessonChange(index, "description", e.target.value)
+                          handleLessonChange(
+                            index,
+                            "description",
+                            e.target.value,
+                          )
                         }
                         rows={2}
                         className="w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition"
@@ -327,7 +339,7 @@ export default function CreateCoursePage() {
                             handleLessonChange(
                               index,
                               "file",
-                              e.target.files?.[0] || null
+                              e.target.files?.[0] || null,
                             )
                           }
                           className="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 border border-slate-300 rounded-lg bg-white"
@@ -343,7 +355,7 @@ export default function CreateCoursePage() {
                               handleLessonChange(
                                 index,
                                 "isFreePreview",
-                                e.target.checked
+                                e.target.checked,
                               )
                             }
                             className="sr-only peer"

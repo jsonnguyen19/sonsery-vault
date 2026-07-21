@@ -53,13 +53,19 @@ export default async function CourseDetailPage({
               <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded bg-amber-50 text-amber-700 border border-amber-200 uppercase mb-2">
                 {course.status || "Draft"}
               </span>
-              <h1 className="text-2xl font-bold text-slate-900">{course.title}</h1>
-              <p className="text-sm text-slate-500 mt-1">{course.description}</p>
+              <h1 className="text-2xl font-bold text-slate-900">
+                {course.title}
+              </h1>
+              <p className="text-sm text-slate-500 mt-1">
+                {course.description}
+              </p>
             </div>
             <div className="text-right">
               <p className="text-xs text-slate-400">Giá khóa học</p>
               <p className="text-xl font-bold text-blue-600">
-                {course.price ? `${course.price.toLocaleString("vi-VN")} đ` : "Miễn phí"}
+                {course.price
+                  ? `${course.price.toLocaleString("vi-VN")} đ`
+                  : "Miễn phí"}
               </p>
             </div>
           </div>
@@ -72,15 +78,24 @@ export default async function CourseDetailPage({
           </h2>
 
           {!course.lessons || course.lessons.length === 0 ? (
-            <p className="text-sm text-slate-500 py-4">Khóa học này chưa có bài học nào.</p>
+            <p className="text-sm text-slate-500 py-4">
+              Khóa học này chưa có bài học nào.
+            </p>
           ) : (
             <div className="divide-y divide-slate-100">
               {course.lessons.map((lesson, index: number) => (
-                <div key={lesson.id || index} className="py-3 flex items-center justify-between">
+                <div
+                  key={lesson.id || index}
+                  className="py-3 flex items-center justify-between"
+                >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-slate-400">#{index + 1}</span>
-                      <p className="text-sm font-semibold text-slate-800">{lesson.title}</p>
+                      <span className="text-xs font-bold text-slate-400">
+                        #{index + 1}
+                      </span>
+                      <p className="text-sm font-semibold text-slate-800">
+                        {lesson.title}
+                      </p>
                       {lesson.isFreePreview && (
                         <span className="text-[10px] bg-emerald-50 text-emerald-600 border border-emerald-200 px-1.5 py-0.5 rounded font-medium">
                           Học thử
@@ -88,7 +103,9 @@ export default async function CourseDetailPage({
                       )}
                     </div>
                     {lesson.description && (
-                      <p className="text-xs text-slate-500">{lesson.description}</p>
+                      <p className="text-xs text-slate-500">
+                        {lesson.description}
+                      </p>
                     )}
                   </div>
                   {lesson.videoKey ? (
@@ -96,7 +113,9 @@ export default async function CourseDetailPage({
                       Đã có Video R2
                     </span>
                   ) : (
-                    <span className="text-xs text-slate-400">Chưa có video</span>
+                    <span className="text-xs text-slate-400">
+                      Chưa có video
+                    </span>
                   )}
                 </div>
               ))}

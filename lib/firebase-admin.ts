@@ -8,7 +8,7 @@ if (getApps().length === 0) {
 
     if (!rawKey) {
       throw new Error(
-        "Chưa cấu hình biến môi trường FIREBASE_SERVICE_ACCOUNT_KEY trong .env"
+        "Chưa cấu hình biến môi trường FIREBASE_SERVICE_ACCOUNT_KEY trong .env",
       );
     }
 
@@ -18,7 +18,7 @@ if (getApps().length === 0) {
     if (serviceAccount.private_key) {
       serviceAccount.private_key = serviceAccount.private_key.replace(
         /\\n/g,
-        "\n"
+        "\n",
       );
     }
 

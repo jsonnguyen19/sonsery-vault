@@ -24,7 +24,9 @@ export default async function InstructorCoursesPage() {
       <div className="max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Khóa học của tôi</h1>
+            <h1 className="text-2xl font-bold text-slate-900">
+              Khóa học của tôi
+            </h1>
             <p className="text-sm text-slate-500 mt-1">
               Quản lý danh sách nội dung giảng dạy của bạn
             </p>
@@ -39,7 +41,9 @@ export default async function InstructorCoursesPage() {
 
         {courses.length === 0 ? (
           <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-            <p className="text-slate-500 text-sm mb-4">Chưa có khóa học nào được tạo.</p>
+            <p className="text-slate-500 text-sm mb-4">
+              Chưa có khóa học nào được tạo.
+            </p>
             <Link
               href="/instructor/courses/new"
               className="text-blue-600 hover:underline text-sm font-medium"
@@ -64,7 +68,9 @@ export default async function InstructorCoursesPage() {
                       {course.status || "Draft"}
                     </span>
                     <span className="text-sm font-bold text-blue-600">
-                      {course.price ? `${course.price.toLocaleString("vi-VN")} đ` : "Miễn phí"}
+                      {course.price
+                        ? `${course.price.toLocaleString("vi-VN")} đ`
+                        : "Miễn phí"}
                     </span>
                   </div>
 

@@ -5,12 +5,13 @@ import { slugify } from "@/lib/utils/slugify";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { title, description, price, thumbnailKey, lessons, instructorId } = body;
+    const { title, description, price, thumbnailKey, lessons, instructorId } =
+      body;
 
     if (!title || !description || price === undefined || !thumbnailKey) {
       return NextResponse.json(
         { error: "Thiếu thông tin khóa học bắt buộc." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -33,14 +34,12 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       { message: "Tạo khóa học thành công!", id: docRef.id, slug },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Lỗi khi tạo khóa học:", error);
-    const message = error instanceof Error ? error.message : "Lỗi máy chủ nội bộ";
-    return NextResponse.json(
-      { error: message },
-      { status: 500 }
-    );
+    const message =
+      error instanceof Error ? error.message : "Lỗi máy chủ nội bộ";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

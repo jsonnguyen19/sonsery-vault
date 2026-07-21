@@ -54,14 +54,22 @@ export default function EditCoursePage({
 
         if (data.lessons && Array.isArray(data.lessons)) {
           setLessons(
-            data.lessons.map((l: { id: string; title: string; description: string; isFreePreview: boolean; videoKey: string }) => ({
-              id: l.id,
-              title: l.title || "",
-              description: l.description || "",
-              isFreePreview: !!l.isFreePreview,
-              videoKey: l.videoKey || "",
-              file: null,
-            }))
+            data.lessons.map(
+              (l: {
+                id: string;
+                title: string;
+                description: string;
+                isFreePreview: boolean;
+                videoKey: string;
+              }) => ({
+                id: l.id,
+                title: l.title || "",
+                description: l.description || "",
+                isFreePreview: !!l.isFreePreview,
+                videoKey: l.videoKey || "",
+                file: null,
+              }),
+            ),
           );
         }
       } catch (err) {
@@ -121,7 +129,7 @@ export default function EditCoursePage({
   const handleLessonChange = (
     index: number,
     field: keyof LessonInput,
-    value: string | boolean | File | null | undefined
+    value: string | boolean | File | null | undefined,
   ) => {
     setLessons((prev) => {
       const updated = [...prev];
@@ -182,7 +190,9 @@ export default function EditCoursePage({
         let videoKey = lesson.videoKey || "";
 
         if (lesson.file) {
-          setProgressText(`Đang upload video bài #${i + 1}: ${lesson.title || "Chưa đặt tên"}...`);
+          setProgressText(
+            `Đang upload video bài #${i + 1}: ${lesson.title || "Chưa đặt tên"}...`,
+          );
           videoKey = await uploadFileToR2(lesson.file);
         }
 
@@ -218,7 +228,10 @@ export default function EditCoursePage({
       router.push(`/instructor/courses/${id}`);
     } catch (err) {
       console.error(err);
-      const message = err instanceof Error ? err.message : "Đã xảy ra lỗi trong quá trình lưu!";
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Đã xảy ra lỗi trong quá trình lưu!";
       alert(message);
     } finally {
       setSaving(false);
@@ -327,10 +340,16 @@ export default function EditCoursePage({
 
               {thumbnailPreview && (
                 <div className="pt-2">
-                  <span className="text-xs text-slate-500 block mb-1">Ảnh thumbnail mới:</span>
+                  <span className="text-xs text-slate-500 block mb-1">
+                    Ảnh thumbnail mới:
+                  </span>
                   <div className="w-40 h-24 relative rounded-lg overflow-hidden border border-slate-200">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={thumbnailPreview} alt="Preview" className="w-full h-full object-cover" />
+                    <img
+                      src={thumbnailPreview}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
               )}
@@ -359,7 +378,9 @@ export default function EditCoursePage({
 
             {lessons.length === 0 ? (
               <div className="text-center py-8 border-2 border-dashed border-slate-200 rounded-xl">
-                <p className="text-sm text-slate-500">Chưa có bài học nào trong khóa học này.</p>
+                <p className="text-sm text-slate-500">
+                  Chưa có bài học nào trong khóa học này.
+                </p>
                 <button
                   type="button"
                   onClick={handleAddLesson}
@@ -433,7 +454,11 @@ export default function EditCoursePage({
                           placeholder="Mô tả tóm tắt nội dung bài học..."
                           value={lesson.description}
                           onChange={(e) =>
-                            handleLessonChange(index, "description", e.target.value)
+                            handleLessonChange(
+                              index,
+                              "description",
+                              e.target.value,
+                            )
                           }
                           rows={2}
                           className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
@@ -452,7 +477,7 @@ export default function EditCoursePage({
                               handleLessonChange(
                                 index,
                                 "file",
-                                e.target.files?.[0] || null
+                                e.target.files?.[0] || null,
                               )
                             }
                             className="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 border border-slate-300 rounded-lg bg-white"
@@ -478,7 +503,7 @@ export default function EditCoursePage({
                                 handleLessonChange(
                                   index,
                                   "isFreePreview",
-                                  e.target.checked
+                                  e.target.checked,
                                 )
                               }
                               className="sr-only peer"

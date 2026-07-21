@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     if (!filename || !contentType) {
       return NextResponse.json(
         { error: "Thiếu thông tin filename hoặc contentType" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     console.error("Lỗi tạo Presigned URL:", error);
     return NextResponse.json(
       { error: "Không thể tạo Presigned URL" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
