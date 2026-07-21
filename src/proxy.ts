@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const sessionCookie = request.cookies.get("session");
 
   console.log(
-    `[Middleware] Checking path: ${pathname} | Session Cookie present: ${!!sessionCookie}`
+    `[Proxy] Checking path: ${pathname} | Session Cookie present: ${!!sessionCookie}`
   );
 
   // Public paths that don't require authentication
@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
   // If it's a protected path and no session cookie, redirect to login
   if (isProtectedPath && !sessionCookie) {
     console.log(
-      `[Middleware] Redirecting to /login from ${pathname} (no session)`
+      `[Proxy] Redirecting to /login from ${pathname} (no session)`
     );
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
@@ -30,7 +30,7 @@ export function middleware(request: NextRequest) {
   // If user has session and tries to access login page, redirect to dashboard
   if (pathname === "/login" && sessionCookie) {
     console.log(
-      `[Middleware] Redirecting to /dashboard from /login (already authenticated)`
+      `[Proxy] Redirecting to /dashboard from /login (already authenticated)`
     );
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
