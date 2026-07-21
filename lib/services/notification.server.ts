@@ -142,7 +142,3 @@ export const notificationServer = {
     });
   },
 };
-
-// Client-side compatible functions (use in client components with Firebase client SDK)
-// These will use the client-side Firebase SDK imported from '@/lib/firebase'
-// For realtime subscriptions, use the client SDK directly in components

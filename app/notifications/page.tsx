@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
-import { notificationService } from '@/lib/services/notification';
+import { notificationClient as notificationService } from '@/lib/services/notification.client';
 import type { Notification } from '@/lib/types/notification';
 import { useRouter } from 'next/navigation';
 import {
@@ -47,7 +47,6 @@ export default function NotificationsPage() {
 
     if (!user) return;
 
-    // Load initial notifications
     const loadNotifications = async () => {
       try {
         const data = await notificationService.getUserNotifications(user.uid);
@@ -62,7 +61,6 @@ export default function NotificationsPage() {
 
     loadNotifications();
 
-    // Subscribe to realtime updates
     const unsubscribe = notificationService.subscribeToNotifications(
       user.uid,
       (data) => {
@@ -130,7 +128,6 @@ export default function NotificationsPage() {
   return (
     <div className="min-h-screen bg-gray-950 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Bell className="w-6 h-6 text-blue-400" />
@@ -163,7 +160,6 @@ export default function NotificationsPage() {
           </div>
         </div>
 
-        {/* Notifications List */}
         {notifications.length === 0 ? (
           <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-12 text-center">
             <Bell className="w-12 h-12 text-gray-600 mx-auto mb-4" />

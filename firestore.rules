@@ -73,6 +73,67 @@ service cloud.firestore {
       allow delete: if allowWrite();
     }
     
+    // ============ ENROLLMENTS COLLECTION ============
+    match /enrollments/{enrollmentId} {
+      function allowRead() {
+        return isAuthenticated() && 
+               (isAdmin() || isOwner(resource.data.userId));
+      }
+      
+      function allowWrite() {
+        return isAuthenticated() && 
+               (isAdmin() || isOwner(request.resource.data.userId));
+      }
+      
+      function isValidEnrollment() {
+        return request.resource.data.keys().hasAll(['userId', 'courseId']) &&
+               request.resource.data.userId is string &&
+               request.resource.data.courseId is string &&
+               request.resource.data.status in ['active', 'completed', 'cancelled'] &&
+               request.resource.data.progress is number &&
+               request.resource.data.progress >= 0 &&
+               request.resource.data.progress <= 100;
+      }
+      
+      allow get: if allowRead();
+      allow list: if isAuthenticated() && 
+        (isAdmin() || request.query.userId == request.auth.uid);
+      allow create: if allowWrite() && isValidEnrollment();
+      allow update: if allowWrite() && isValidEnrollment();
+      allow delete: if allowWrite();
+    }
+    
+    // ============ COURSE PROGRESS COLLECTION ============
+    match /courseProgress/{progressId} {
+      function allowRead() {
+        return isAuthenticated() && 
+               (isAdmin() || isOwner(resource.data.userId));
+      }
+      
+      function allowWrite() {
+        return isAuthenticated() && 
+               (isAdmin() || isOwner(request.resource.data.userId));
+      }
+      
+      function isValidProgress() {
+        return request.resource.data.keys().hasAll(['userId', 'courseId']) &&
+               request.resource.data.userId is string &&
+               request.resource.data.courseId is string &&
+               request.resource.data.overallProgress is number &&
+               request.resource.data.overallProgress >= 0 &&
+               request.resource.data.overallProgress <= 100 &&
+               (!request.resource.data.keys().hasAny(['isCompleted']) ||
+                (request.resource.data.isCompleted is bool));
+      }
+      
+      allow get: if allowRead();
+      allow list: if isAuthenticated() && 
+        (isAdmin() || request.query.userId == request.auth.uid);
+      allow create: if allowWrite() && isValidProgress();
+      allow update: if allowWrite() && isValidProgress();
+      allow delete: if allowWrite();
+    }
+    
     // ============ NOTIFICATIONS COLLECTION ============
     match /notifications/{notificationId} {
       function allowRead() {
@@ -104,64 +165,6 @@ service cloud.firestore {
       allow update: if (allowWrite() && isValidNotification()) || canUpdateReadStatus();
       allow delete: if allowWrite() || 
         (isAuthenticated() && isOwner(resource.data.userId));
-    }
-    
-    // ============ ENROLLMENTS COLLECTION ============
-    match /enrollments/{enrollmentId} {
-      function allowRead() {
-        return isAuthenticated() && 
-               (isAdmin() || isOwner(resource.data.userId));
-      }
-      
-      function allowWrite() {
-        return isAuthenticated() && 
-               (isAdmin() || isOwner(request.resource.data.userId));
-      }
-      
-      function isValidEnrollment() {
-        return request.resource.data.keys().hasAll(['userId', 'courseId']) &&
-               request.resource.data.userId is string &&
-               request.resource.data.courseId is string;
-      }
-      
-      allow get: if allowRead();
-      allow list: if isAuthenticated() && 
-        (isAdmin() || request.query.userId == request.auth.uid);
-      allow create: if allowWrite() && isValidEnrollment();
-      allow update: if allowWrite() && isValidEnrollment();
-      allow delete: if allowWrite();
-    }
-    
-    // ============ PROGRESS COLLECTION ============
-    match /progress/{progressId} {
-      function allowRead() {
-        return isAuthenticated() && 
-               (isAdmin() || isOwner(resource.data.userId));
-      }
-      
-      function allowWrite() {
-        return isAuthenticated() && 
-               (isAdmin() || isOwner(request.resource.data.userId));
-      }
-      
-      function isValidProgress() {
-        return request.resource.data.keys().hasAll(['userId', 'courseId']) &&
-               request.resource.data.userId is string &&
-               request.resource.data.courseId is string &&
-               (!request.resource.data.keys().hasAny(['completed']) ||
-                (request.resource.data.completed is bool)) &&
-               (!request.resource.data.keys().hasAny(['progress']) ||
-                (request.resource.data.progress is number && 
-                 request.resource.data.progress >= 0 && 
-                 request.resource.data.progress <= 100));
-      }
-      
-      allow get: if allowRead();
-      allow list: if isAuthenticated() && 
-        (isAdmin() || request.query.userId == request.auth.uid);
-      allow create: if allowWrite() && isValidProgress();
-      allow update: if allowWrite() && isValidProgress();
-      allow delete: if allowWrite();
     }
     
     // ============ SESSIONS & TOKENS ============

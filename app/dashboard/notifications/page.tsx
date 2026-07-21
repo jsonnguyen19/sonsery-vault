@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useToast } from '@/components/ui/ToastContainer';
 import { useRouter } from 'next/navigation';
-import { notificationService } from '@/lib/services/notification';
+import { notificationClient as notificationService } from '@/lib/services/notification.client';
 import type { Notification, CreateNotificationDTO } from '@/lib/types/notification';
 import {
   Bell,
@@ -12,7 +12,6 @@ import {
   Edit,
   Trash2,
   X,
-  Check,
   Info,
   AlertCircle,
   CheckCircle,
@@ -52,7 +51,6 @@ export default function DashboardNotificationsPage() {
   const [users, setUsers] = useState<{ uid: string; email: string }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect if not admin
   useEffect(() => {
     if (!loading && !isAdmin) {
       toast.error('You do not have permission to access this page');
@@ -60,7 +58,6 @@ export default function DashboardNotificationsPage() {
     }
   }, [loading, isAdmin, router, toast]);
 
-  // Fetch notifications
   const fetchNotifications = async () => {
     try {
       const data = await notificationService.getAllNotifications();
@@ -73,7 +70,6 @@ export default function DashboardNotificationsPage() {
     }
   };
 
-  // Fetch users for dropdown
   const fetchUsers = async () => {
     try {
       const response = await fetch('/api/admin/users');
@@ -91,7 +87,6 @@ export default function DashboardNotificationsPage() {
       fetchNotifications();
       fetchUsers();
 
-      // Subscribe to realtime updates
       const unsubscribe = notificationService.subscribeToAllNotifications((data) => {
         setNotifications(data);
       });
@@ -187,7 +182,6 @@ export default function DashboardNotificationsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Notifications</h1>
@@ -208,7 +202,6 @@ export default function DashboardNotificationsPage() {
         </button>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
           <p className="text-sm text-gray-400">Total</p>
@@ -228,7 +221,6 @@ export default function DashboardNotificationsPage() {
         </div>
       </div>
 
-      {/* Notifications List */}
       {notifications.length === 0 ? (
         <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-12 text-center">
           <Bell className="w-12 h-12 text-gray-600 mx-auto mb-4" />
@@ -335,7 +327,6 @@ export default function DashboardNotificationsPage() {
         </div>
       )}
 
-      {/* Create/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-gray-800 rounded-xl border border-gray-700 w-full max-w-md p-6">

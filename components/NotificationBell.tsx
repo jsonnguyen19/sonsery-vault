@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
-import { notificationService } from '@/lib/services/notification';
+import { notificationClient as notificationService } from '@/lib/services/notification.client';
 import { Bell } from 'lucide-react';
 import Link from 'next/link';
 

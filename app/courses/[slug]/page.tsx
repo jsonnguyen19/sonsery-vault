@@ -1,14 +1,15 @@
-import { adminDb } from "@/lib/firebase-admin";
-import type { Course } from "@/lib/types/course";
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { BookOpen, Clock, DollarSign, User, Calendar, ArrowLeft, Play, Lock } from "lucide-react";
+import { adminDb } from '@/lib/firebase-admin';
+import type { Course } from '@/lib/types/course';
+import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { BookOpen, Clock, DollarSign, User, Calendar, ArrowLeft, Play, Lock } from 'lucide-react';
+import EnrollButton from '@/components/ui/EnrollButton';
 
 async function getCourseBySlug(slug: string): Promise<Course | null> {
   try {
     const snapshot = await adminDb
-      .collection("courses")
-      .where("slug", "==", slug)
+      .collection('courses')
+      .where('slug', '==', slug)
       .limit(1)
       .get();
 
@@ -17,7 +18,7 @@ async function getCourseBySlug(slug: string): Promise<Course | null> {
     const doc = snapshot.docs[0];
     return { id: doc.id, ...doc.data() } as Course;
   } catch (error) {
-    console.error("Error fetching course:", error);
+    console.error('Error fetching course:', error);
     return null;
   }
 }
@@ -36,7 +37,7 @@ export default async function CoursePublicPage({ params }: PageProps) {
     notFound();
   }
 
-  const isPublished = course.status === "published";
+  const isPublished = course.status === 'published';
   const totalLessons = course.lessons?.length || 0;
   const freeLessons = course.lessons?.filter((l) => l.isFreePreview).length || 0;
 
@@ -65,11 +66,11 @@ export default async function CoursePublicPage({ params }: PageProps) {
                 <span
                   className={`text-xs font-semibold px-3 py-1 rounded-full ${
                     isPublished
-                      ? "bg-green-900/80 text-green-400 border border-green-800"
-                      : "bg-amber-900/80 text-amber-400 border border-amber-800"
+                      ? 'bg-green-900/80 text-green-400 border border-green-800'
+                      : 'bg-amber-900/80 text-amber-400 border border-amber-800'
                   }`}
                 >
-                  {isPublished ? "Published" : "Draft"}
+                  {isPublished ? 'Published' : 'Draft'}
                 </span>
                 {!isPublished && (
                   <span className="text-xs text-gray-500">(Not publicly available)</span>
@@ -102,23 +103,19 @@ export default async function CoursePublicPage({ params }: PageProps) {
                 )}
               </div>
 
-              {/* Price and CTA */}
+              {/* Price and Enroll Button */}
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <div className="text-3xl font-bold text-white">
-                  {course.price ? `${course.price.toLocaleString("vi-VN")} đ` : "Free"}
+                  {course.price ? `${course.price.toLocaleString('vi-VN')} đ` : 'Free'}
                 </div>
-                {isPublished ? (
-                  <button className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40">
-                    Enroll Now
-                  </button>
-                ) : (
-                  <button className="px-8 py-3 bg-gray-700 text-gray-400 font-semibold rounded-lg cursor-not-allowed">
-                    Coming Soon
-                  </button>
-                )}
+                <EnrollButton
+                  courseId={course.id}
+                  coursePrice={course.price || 0}
+                  isPublished={isPublished}
+                />
                 {freeLessons > 0 && (
                   <span className="text-sm text-green-400">
-                    {freeLessons} free preview{freeLessons > 1 ? "s" : ""} available
+                    {freeLessons} free preview{freeLessons > 1 ? 's' : ''} available
                   </span>
                 )}
               </div>
@@ -146,7 +143,7 @@ export default async function CoursePublicPage({ params }: PageProps) {
           <div className="p-6 border-b border-gray-700">
             <h2 className="text-xl font-bold text-white">Course Content</h2>
             <p className="text-sm text-gray-400 mt-1">
-              {totalLessons} lessons • {freeLessons} free preview{freeLessons > 1 ? "s" : ""}
+              {totalLessons} lessons • {freeLessons} free preview{freeLessons > 1 ? 's' : ''}
             </p>
           </div>
 
@@ -211,15 +208,12 @@ export default async function CoursePublicPage({ params }: PageProps) {
           <p className="text-gray-400 mb-6 max-w-lg mx-auto">
             Enroll now and get access to all lessons, quizzes, and learning materials.
           </p>
-          {isPublished ? (
-            <button className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40">
-              Enroll Now — {course.price ? `${course.price.toLocaleString("vi-VN")} đ` : "Free"}
-            </button>
-          ) : (
-            <button className="px-8 py-3 bg-gray-700 text-gray-400 font-semibold rounded-lg cursor-not-allowed">
-              Coming Soon
-            </button>
-          )}
+          <EnrollButton
+            courseId={course.id}
+            coursePrice={course.price || 0}
+            isPublished={isPublished}
+            className="mx-auto"
+          />
         </div>
       </section>
     </main>
