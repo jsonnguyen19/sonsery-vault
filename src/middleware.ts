@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
   const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
 
   // Protected paths that require authentication
-  const protectedPaths = ["/dashboard", "/instructor"];
+  const protectedPaths = ["/dashboard"];
   const isProtectedPath = protectedPaths.some((path) => pathname.startsWith(path));
 
   // If it's a protected path and no session cookie, redirect to login

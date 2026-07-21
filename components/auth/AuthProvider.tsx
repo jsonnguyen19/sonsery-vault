@@ -8,6 +8,7 @@ import {
   signOut,
   getIdToken as firebaseGetIdToken,
 } from "firebase/auth";
+import { useToast } from "@/components/ui/ToastContainer";
 
 interface AuthContextType {
   user: User | null;
@@ -54,6 +55,7 @@ const clearSessionOnServer = async () => {
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const toast = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -82,8 +84,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await signOut(auth);
       await fetch("/api/auth/logout", { method: "POST" });
       console.log("[Client Auth] Logged out successfully");
+      toast.success("Logged out successfully");
     } catch (error) {
       console.error("[Client Auth] Logout error:", error);
+      toast.error("Failed to log out");
       throw error;
     }
   };

@@ -34,25 +34,57 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
 
+    console.log("[API DEBUG] PUT /api/courses/${id}");
+    console.log("[API DEBUG] Request body:", body);
+    console.log("[API DEBUG] thumbnailKey received:", body.thumbnailKey);
+
     const courseRef = adminDb.collection("courses").doc(id);
     const doc = await courseRef.get();
 
     if (!doc.exists) {
+      console.log("[API DEBUG] Course not found");
       return NextResponse.json(
-        { error: "Khóa học không tồn tại" },
+        { error: "Course not found" },
         { status: 404 },
       );
     }
 
-    await courseRef.update({
-      ...body,
+    // Update only allowed fields
+    const updateData: {
+      title: string;
+      description: string;
+      price: number;
+      status: string;
+      lessons: unknown[];
+      updatedAt: string;
+      thumbnailKey?: string;
+    } = {
+      title: body.title,
+      description: body.description,
+      price: body.price,
+      status: body.status,
+      lessons: body.lessons,
       updatedAt: new Date().toISOString(),
-    });
+    };
 
-    return NextResponse.json({ message: "Cập nhật thành công!" });
+    // Only update thumbnail if provided
+    if (body.thumbnailKey) {
+      updateData.thumbnailKey = body.thumbnailKey;
+      console.log("[API DEBUG] Updating thumbnailKey:", body.thumbnailKey);
+    } else {
+      console.log("[API DEBUG] No thumbnailKey provided, skipping update");
+    }
+
+    console.log("[API DEBUG] Final updateData:", updateData);
+
+    await courseRef.update(updateData);
+    console.log("[API DEBUG] Course updated successfully");
+
+    return NextResponse.json({ message: "Course updated successfully!" });
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : "Lỗi không xác định";
+      error instanceof Error ? error.message : "Unknown error";
+    console.error("[API DEBUG] Error:", error);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

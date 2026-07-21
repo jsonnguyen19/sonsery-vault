@@ -7,7 +7,10 @@ export async function POST(request: Request) {
   try {
     const { filename, contentType } = await request.json();
 
+    console.log("[API Upload] Received:", { filename, contentType });
+
     if (!filename || !contentType) {
+      console.log("[API Upload] Missing filename or contentType");
       return NextResponse.json(
         { error: "Thiếu thông tin filename hoặc contentType" },
         { status: 400 },
@@ -17,6 +20,8 @@ export async function POST(request: Request) {
     // 1. Tạo unique key để tránh trùng lặp tên file trên R2
     // VD: 1715600000000-avatar.png
     const uniqueKey = `${Date.now()}-${filename}`;
+    console.log("[API Upload] Generated key:", uniqueKey);
+    console.log("[API Upload] R2_BUCKET_NAME:", process.env.R2_BUCKET_NAME);
 
     // 2. Định nghĩa Command để đẩy file (PUT) lên R2
     const command = new PutObjectCommand({
@@ -30,13 +35,16 @@ export async function POST(request: Request) {
       expiresIn: 3600,
     });
 
+    console.log("[API Upload] Presigned URL generated successfully");
+    console.log("[API Upload] Upload URL (first 100 chars):", uploadUrl.substring(0, 100));
+
     // 4. Trả URL và Key về cho Browser
     return NextResponse.json({
       uploadUrl,
       key: uniqueKey,
     });
   } catch (error: unknown) {
-    console.error("Lỗi tạo Presigned URL:", error);
+    console.error("[API Upload] Error:", error);
     return NextResponse.json(
       { error: "Không thể tạo Presigned URL" },
       { status: 500 },
