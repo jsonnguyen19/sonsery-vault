@@ -8,6 +8,7 @@ import {
   Users,
   Settings,
   Shield,
+  Bell,
 } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
 
@@ -15,6 +16,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Courses", href: "/dashboard/courses", icon: BookOpen },
   { name: "Students", href: "/dashboard/students", icon: Users },
+  { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 

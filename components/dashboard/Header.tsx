@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/components/auth/AuthProvider";
 import Avatar from "@/components/ui/Avatar";
+import NotificationBell from "@/components/NotificationBell";
 import { LogOut, Settings, User } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -30,6 +31,7 @@ export default function Header() {
       </div>
 
       <div className="flex items-center gap-4 relative">
+        <NotificationBell />
         <button
           onClick={() => setShowDropdown(!showDropdown)}
           className="flex items-center gap-3 hover:opacity-80 transition-opacity"

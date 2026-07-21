@@ -1,38 +1,62 @@
-import { NextRequest, NextResponse } from "next/server";
-import { adminAuth } from "@/lib/firebase-admin";
-import { getCurrentUser } from "@/lib/auth/session";
-import { ROLES, isAdmin } from "@/lib/auth/roles";
+import { NextRequest, NextResponse } from 'next/server';
+import { adminDb, adminAuth } from '@/lib/firebase-admin';
+import { cookies } from 'next/headers';
 
-export async function GET(req: NextRequest) {
+async function verifySession(request: NextRequest) {
+  const authHeader = request.headers.get('authorization');
+  let token = null;
+
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.split('Bearer ')[1];
+  } else {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get('session')?.value;
+    if (sessionCookie) {
+      token = sessionCookie;
+    }
+  }
+
+  if (!token) return null;
+
   try {
-    // Check if current user is admin
-    const currentUser = await getCurrentUser();
-    if (!currentUser || !isAdmin(currentUser.role)) {
-      return NextResponse.json(
-        { error: "Unauthorized. Admin access required." },
-        { status: 403 }
-      );
+    const decodedToken = await adminAuth.verifyIdToken(token);
+    return decodedToken;
+  } catch (error) {
+    try {
+      const decodedCookie = await adminAuth.verifySessionCookie(token, true);
+      return decodedCookie;
+    } catch (err) {
+      console.error('Token verification failed:', err);
+      return null;
+    }
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const decoded = await verifySession(request);
+    if (!decoded) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get all users (max 1000)
-    const listUsersResult = await adminAuth.listUsers(1000);
-    
-    const users = listUsersResult.users.map((user) => ({
-      uid: user.uid,
-      email: user.email || "No email",
-      displayName: user.displayName || "No name",
-      photoURL: user.photoURL,
-      role: user.customClaims?.role || ROLES.USER,
-      disabled: user.disabled,
-      createdAt: user.metadata?.creationTime,
-      lastSignIn: user.metadata?.lastSignInTime,
+    // Get users from Firestore users collection
+    const usersSnapshot = await adminDb
+      .collection('users')
+      .select('uid', 'email', 'displayName', 'role')
+      .get();
+
+    const users = usersSnapshot.docs.map((doc) => ({
+      uid: doc.id,
+      email: doc.data().email || '',
+      displayName: doc.data().displayName || '',
+      role: doc.data().role || 'user',
     }));
 
-    return NextResponse.json({ users });
+    return NextResponse.json(users);
   } catch (error) {
-    console.error("[Admin API] Error listing users:", error);
+    console.error('Error fetching users:', error);
     return NextResponse.json(
-      { error: "Failed to fetch users" },
+      { error: 'Failed to fetch users' },
       { status: 500 }
     );
   }
