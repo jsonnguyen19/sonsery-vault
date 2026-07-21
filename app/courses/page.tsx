@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { db } from "@/lib/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import CourseCard from "@/components/ui/CourseCard";
 import type { Course } from "@/lib/types/course";
 import { Search, Filter, X, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
@@ -15,19 +17,6 @@ export default function CoursesPage() {
   const [statusFilter, setStatusFilter] = useState("published");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalCourses, setTotalCourses] = useState(0);
-
-  // Debounced search
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(search);
-      setCurrentPage(1); // Reset page when search changes
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [search]);
 
   // Fetch courses
   const fetchCourses = useCallback(async () => {
@@ -35,41 +24,49 @@ export default function CoursesPage() {
     setError(null);
 
     try {
-      const params = new URLSearchParams({
-        page: String(currentPage),
-        limit: String(PAGE_SIZE),
-        status: statusFilter,
-      });
+      let q = query(collection(db, "courses"));
 
-      if (debouncedSearch) {
-        params.append("search", debouncedSearch);
+      if (statusFilter) {
+        q = query(q, where("status", "==", statusFilter));
       }
 
-      const response = await fetch(`/api/courses/list?${params}`);
-      const data = await response.json();
+      const snapshot = await getDocs(q);
+      let allCourses = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Course[];
 
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to fetch courses");
+      // Client-side search filter
+      if (search) {
+        allCourses = allCourses.filter(
+          (course) =>
+            course.title?.toLowerCase().includes(search.toLowerCase()) ||
+            course.description?.toLowerCase().includes(search.toLowerCase())
+        );
       }
 
-      setCourses(data.courses);
-      setTotalPages(data.pagination.totalPages);
-      setTotalCourses(data.pagination.total);
+      // Pagination
+      const startIndex = (currentPage - 1) * PAGE_SIZE;
+      const paginatedCourses = allCourses.slice(startIndex, startIndex + PAGE_SIZE);
+      const totalCourses = allCourses.length;
+
+      setCourses(paginatedCourses);
+      setTotalPages(Math.ceil(totalCourses / PAGE_SIZE));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
     }
-  }, [currentPage, statusFilter, debouncedSearch]);
+  }, [currentPage, statusFilter, search]);
 
   useEffect(() => {
     fetchCourses();
   }, [fetchCourses]);
 
-  // Reset page when filter changes
+  // Reset page when filter or search changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [statusFilter, debouncedSearch]);
+  }, [statusFilter, search]);
 
   // Handlers
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,7 +79,6 @@ export default function CoursesPage() {
 
   const clearSearch = () => {
     setSearch("");
-    setDebouncedSearch("");
   };
 
   const goToPage = (page: number) => {
@@ -111,7 +107,7 @@ export default function CoursesPage() {
           <h1 className="text-3xl font-bold text-white">All Courses</h1>
           <p className="text-gray-400 mt-1">
             Browse our collection of courses
-            {totalCourses > 0 && ` (${totalCourses} total)`}
+            {!loading && courses.length > 0 && ` (${courses.length} total)`}
           </p>
         </div>
 
