@@ -25,7 +25,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between">
+    <header className="bg-gray-900 border-b border-gray-800 px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div className="flex items-center gap-4">
         <h2 className="text-lg font-semibold text-white">Dashboard</h2>
       </div>
