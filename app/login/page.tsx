@@ -27,10 +27,10 @@ export default function LoginPage() {
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
       console.log(
-        `[Client Login] Client authentication successful for ${userCredential.user.email}`
+        `[Client Login] Client authentication successful for ${userCredential.user.email}`,
       );
 
       const idToken = await getIdToken(userCredential.user);
@@ -67,7 +67,7 @@ export default function LoginPage() {
       const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
       console.log(
-        `[Client Login] Google authentication successful for ${userCredential.user.email}`
+        `[Client Login] Google authentication successful for ${userCredential.user.email}`,
       );
 
       const idToken = await getIdToken(userCredential.user);
@@ -88,7 +88,8 @@ export default function LoginPage() {
       router.push("/dashboard");
     } catch (err) {
       console.error("[Client Login] Google login error:", err);
-      const errorMessage = err instanceof Error ? err.message : "Google login failed";
+      const errorMessage =
+        err instanceof Error ? err.message : "Google login failed";
       setError(errorMessage);
     } finally {
       setLoading(false);

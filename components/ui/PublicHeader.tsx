@@ -3,7 +3,16 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, BookOpen, Home, Grid, User, LogIn, UserPlus } from "lucide-react";
+import {
+  Menu,
+  X,
+  BookOpen,
+  Home,
+  Grid,
+  User,
+  LogIn,
+  UserPlus,
+} from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import Avatar from "@/components/ui/Avatar";
 
@@ -107,7 +116,11 @@ export default function PublicHeader() {
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden p-2 rounded-lg hover:bg-gray-800/50 transition text-gray-400 hover:text-white"
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </button>
         </div>
 
@@ -142,7 +155,9 @@ export default function PublicHeader() {
                       <p className="text-sm font-medium text-white truncate">
                         {user.displayName || "User"}
                       </p>
-                      <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                      <p className="text-xs text-gray-400 truncate">
+                        {user.email}
+                      </p>
                     </div>
                   </div>
                   <Link

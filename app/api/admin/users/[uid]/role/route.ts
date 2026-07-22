@@ -5,7 +5,7 @@ import { ROLES, isAdmin } from "@/lib/auth/roles";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ uid: string }> }
+  { params }: { params: Promise<{ uid: string }> },
 ) {
   try {
     // Check if current user is admin
@@ -13,7 +13,7 @@ export async function PATCH(
     if (!currentUser || !isAdmin(currentUser.role)) {
       return NextResponse.json(
         { error: "Unauthorized. Admin access required." },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -23,8 +23,10 @@ export async function PATCH(
 
     if (!role || ![ROLES.ADMIN, ROLES.USER].includes(role)) {
       return NextResponse.json(
-        { error: `Invalid role. Must be one of: ${ROLES.ADMIN}, ${ROLES.USER}` },
-        { status: 400 }
+        {
+          error: `Invalid role. Must be one of: ${ROLES.ADMIN}, ${ROLES.USER}`,
+        },
+        { status: 400 },
       );
     }
 
@@ -43,14 +45,14 @@ export async function PATCH(
     console.error("[Admin API] Error updating role:", error);
     return NextResponse.json(
       { error: "Failed to update user role" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ uid: string }> }
+  { params }: { params: Promise<{ uid: string }> },
 ) {
   try {
     // Check if current user is admin
@@ -58,7 +60,7 @@ export async function GET(
     if (!currentUser || !isAdmin(currentUser.role)) {
       return NextResponse.json(
         { error: "Unauthorized. Admin access required." },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -77,7 +79,7 @@ export async function GET(
     console.error("[Admin API] Error fetching user:", error);
     return NextResponse.json(
       { error: "Failed to fetch user" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

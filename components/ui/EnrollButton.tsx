@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/components/auth/AuthProvider';
-import { useRouter } from 'next/navigation';
-import { Loader2, CheckCircle, Lock } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { useRouter } from "next/navigation";
+import { Loader2, CheckCircle, Lock } from "lucide-react";
 
 interface EnrollButtonProps {
   courseId: string;
@@ -16,7 +16,7 @@ export default function EnrollButton({
   courseId,
   coursePrice,
   isPublished,
-  className = '',
+  className = "",
 }: EnrollButtonProps) {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -34,7 +34,7 @@ export default function EnrollButton({
         const data = await res.json();
         setIsEnrolled(!!data.enrollment);
       } catch (err) {
-        console.error('Error checking enrollment:', err);
+        console.error("Error checking enrollment:", err);
       }
     };
 
@@ -43,7 +43,7 @@ export default function EnrollButton({
 
   const handleEnroll = async () => {
     if (!user) {
-      router.push('/login?redirect=/courses/learn');
+      router.push("/login?redirect=/courses/learn");
       return;
     }
 
@@ -57,26 +57,26 @@ export default function EnrollButton({
 
     try {
       const isFree = coursePrice === 0;
-      const res = await fetch('/api/enrollments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/enrollments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           courseId,
-          paymentStatus: isFree ? 'free' : 'pending',
+          paymentStatus: isFree ? "free" : "pending",
           paymentAmount: coursePrice,
         }),
       });
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Failed to enroll');
+        throw new Error(data.error || "Failed to enroll");
       }
 
       const data = await res.json();
       setIsEnrolled(true);
       router.push(`/dashboard/courses/${courseId}/learn`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Enrollment failed');
+      setError(err instanceof Error ? err.message : "Enrollment failed");
     } finally {
       setIsLoading(false);
     }
@@ -125,8 +125,8 @@ export default function EnrollButton({
         className={`px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40 ${className}`}
       >
         {coursePrice > 0
-          ? `Enroll Now — ${coursePrice.toLocaleString('vi-VN')} đ`
-          : 'Enroll Now — Free'}
+          ? `Enroll Now — ${coursePrice.toLocaleString("vi-VN")} đ`
+          : "Enroll Now — Free"}
       </button>
       {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
     </div>

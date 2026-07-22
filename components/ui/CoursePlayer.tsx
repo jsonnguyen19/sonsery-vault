@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useAuth } from '@/components/auth/AuthProvider';
-import { Play, CheckCircle, Lock, Loader2, Circle } from 'lucide-react';
-import type { Lesson } from '@/lib/types/course';
+import { useState } from "react";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { Play, CheckCircle, Lock, Loader2, Circle } from "lucide-react";
+import type { Lesson } from "@/lib/types/course";
 
 interface CoursePlayerProps {
   courseId: string;
@@ -39,10 +39,10 @@ export default function CoursePlayer({
     try {
       // Use lesson index as identifier since lesson.id might be undefined
       const lessonId = lesson.id || `lesson-${index}`;
-      
-      const res = await fetch('/api/enrollments/progress', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+
+      const res = await fetch("/api/enrollments/progress", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           courseId,
           lessonId: lessonId,
@@ -53,14 +53,14 @@ export default function CoursePlayer({
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Failed to update progress');
+        throw new Error(data.error || "Failed to update progress");
       }
 
       setLocalCompleted(newCompleted);
       // Refresh the page to update progress bar
       window.location.reload();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Update failed');
+      setError(err instanceof Error ? err.message : "Update failed");
     } finally {
       setIsUpdating(false);
     }
@@ -70,10 +70,10 @@ export default function CoursePlayer({
     <div
       className={`p-4 rounded-lg border transition-all ${
         isLocked
-          ? 'bg-gray-800/30 border-gray-700/30 opacity-60 cursor-not-allowed'
+          ? "bg-gray-800/30 border-gray-700/30 opacity-60 cursor-not-allowed"
           : localCompleted
-          ? 'bg-green-900/10 border-green-700/30 hover:bg-green-900/20 cursor-pointer'
-          : 'bg-gray-800/30 border-gray-700/30 hover:bg-gray-700/40 cursor-pointer'
+            ? "bg-green-900/10 border-green-700/30 hover:bg-green-900/20 cursor-pointer"
+            : "bg-gray-800/30 border-gray-700/30 hover:bg-gray-700/40 cursor-pointer"
       }`}
     >
       <div className="flex items-center gap-4">
@@ -86,7 +86,7 @@ export default function CoursePlayer({
               onClick={handleToggleComplete}
               disabled={isUpdating}
               className="focus:outline-none"
-              title={localCompleted ? 'Mark as incomplete' : 'Mark as complete'}
+              title={localCompleted ? "Mark as incomplete" : "Mark as complete"}
             >
               {isUpdating ? (
                 <Loader2 className="w-6 h-6 text-blue-400 animate-spin" />
@@ -108,7 +108,9 @@ export default function CoursePlayer({
                   Lesson {index + 1} of {totalLessons}
                 </p>
                 {localCompleted && !isLocked && (
-                  <span className="text-xs text-green-400 font-medium">✓ Done</span>
+                  <span className="text-xs text-green-400 font-medium">
+                    ✓ Done
+                  </span>
                 )}
                 {lesson.isFreePreview && (
                   <span className="text-xs font-medium text-green-400 bg-green-900/30 px-2 py-0.5 rounded">
@@ -116,7 +118,9 @@ export default function CoursePlayer({
                   </span>
                 )}
               </div>
-              <h3 className={`font-medium ${isLocked ? 'text-gray-500' : 'text-white'}`}>
+              <h3
+                className={`font-medium ${isLocked ? "text-gray-500" : "text-white"}`}
+              >
                 {lesson.title}
               </h3>
               {lesson.description && (
@@ -127,9 +131,7 @@ export default function CoursePlayer({
             </div>
           </div>
 
-          {error && (
-            <p className="text-xs text-red-400 mt-2">{error}</p>
-          )}
+          {error && <p className="text-xs text-red-400 mt-2">{error}</p>}
 
           {/* Progress indicator for completed lessons */}
           {!isLocked && localCompleted && (

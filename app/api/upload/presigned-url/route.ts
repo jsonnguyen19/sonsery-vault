@@ -36,7 +36,10 @@ export async function POST(request: Request) {
     });
 
     console.log("[API Upload] Presigned URL generated successfully");
-    console.log("[API Upload] Upload URL (first 100 chars):", uploadUrl.substring(0, 100));
+    console.log(
+      "[API Upload] Upload URL (first 100 chars):",
+      uploadUrl.substring(0, 100),
+    );
 
     // 4. Trả URL và Key về cho Browser
     return NextResponse.json({

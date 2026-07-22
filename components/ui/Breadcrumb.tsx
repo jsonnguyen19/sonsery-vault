@@ -52,7 +52,9 @@ export default function Breadcrumb() {
       if (
         label.match(/^[0-9a-f]{20,}$/i) || // Firebase ID
         label.match(/^[a-f0-9]{24}$/i) || // MongoDB ObjectId
-        label.match(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i) // UUID
+        label.match(
+          /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i,
+        ) // UUID
       ) {
         label = "Details";
       }
@@ -88,9 +90,7 @@ export default function Breadcrumb() {
                   <ChevronRight className="w-3.5 h-3.5 text-gray-600 flex-shrink-0" />
                 )}
                 {isLast ? (
-                  <span className="text-white font-medium">
-                    {item.label}
-                  </span>
+                  <span className="text-white font-medium">{item.label}</span>
                 ) : (
                   <Link
                     href={item.href}

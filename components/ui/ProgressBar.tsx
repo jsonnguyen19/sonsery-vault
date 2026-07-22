@@ -1,35 +1,35 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 interface ProgressBarProps {
   progress: number; // 0-100
   className?: string;
   showLabel?: boolean;
-  size?: 'sm' | 'md' | 'lg';
-  color?: 'blue' | 'green' | 'purple' | 'gradient';
+  size?: "sm" | "md" | "lg";
+  color?: "blue" | "green" | "purple" | "gradient";
 }
 
 export default function ProgressBar({
   progress,
-  className = '',
+  className = "",
   showLabel = false,
-  size = 'md',
-  color = 'blue',
+  size = "md",
+  color = "blue",
 }: ProgressBarProps) {
   const clampedProgress = Math.min(100, Math.max(0, progress));
 
   const sizeClasses = {
-    sm: 'h-1.5',
-    md: 'h-2.5',
-    lg: 'h-4',
+    sm: "h-1.5",
+    md: "h-2.5",
+    lg: "h-4",
   };
 
   const colorClasses = {
-    blue: 'bg-blue-600',
-    green: 'bg-green-600',
-    purple: 'bg-purple-600',
-    gradient: 'bg-gradient-to-r from-blue-500 to-purple-600',
+    blue: "bg-blue-600",
+    green: "bg-green-600",
+    purple: "bg-purple-600",
+    gradient: "bg-gradient-to-r from-blue-500 to-purple-600",
   };
 
   return (
@@ -46,7 +46,7 @@ export default function ProgressBar({
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${clampedProgress}%` }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           className={`${colorClasses[color]} h-full rounded-full transition-all`}
           style={{ width: `${clampedProgress}%` }}
         />

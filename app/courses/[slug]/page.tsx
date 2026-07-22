@@ -1,15 +1,24 @@
-import { adminDb } from '@/lib/firebase-admin';
-import type { Course } from '@/lib/types/course';
-import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import { BookOpen, Clock, DollarSign, User, Calendar, ArrowLeft, Play, Lock } from 'lucide-react';
-import EnrollButton from '@/components/ui/EnrollButton';
+import { adminDb } from "@/lib/firebase-admin";
+import type { Course } from "@/lib/types/course";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import {
+  BookOpen,
+  Clock,
+  DollarSign,
+  User,
+  Calendar,
+  ArrowLeft,
+  Play,
+  Lock,
+} from "lucide-react";
+import EnrollButton from "@/components/ui/EnrollButton";
 
 async function getCourseBySlug(slug: string): Promise<Course | null> {
   try {
     const snapshot = await adminDb
-      .collection('courses')
-      .where('slug', '==', slug)
+      .collection("courses")
+      .where("slug", "==", slug)
       .limit(1)
       .get();
 
@@ -18,7 +27,7 @@ async function getCourseBySlug(slug: string): Promise<Course | null> {
     const doc = snapshot.docs[0];
     return { id: doc.id, ...doc.data() } as Course;
   } catch (error) {
-    console.error('Error fetching course:', error);
+    console.error("Error fetching course:", error);
     return null;
   }
 }
@@ -37,9 +46,10 @@ export default async function CoursePublicPage({ params }: PageProps) {
     notFound();
   }
 
-  const isPublished = course.status === 'published';
+  const isPublished = course.status === "published";
   const totalLessons = course.lessons?.length || 0;
-  const freeLessons = course.lessons?.filter((l) => l.isFreePreview).length || 0;
+  const freeLessons =
+    course.lessons?.filter((l) => l.isFreePreview).length || 0;
 
   return (
     <main className="min-h-screen bg-gray-950">
@@ -66,14 +76,16 @@ export default async function CoursePublicPage({ params }: PageProps) {
                 <span
                   className={`text-xs font-semibold px-3 py-1 rounded-full ${
                     isPublished
-                      ? 'bg-green-900/80 text-green-400 border border-green-800'
-                      : 'bg-amber-900/80 text-amber-400 border border-amber-800'
+                      ? "bg-green-900/80 text-green-400 border border-green-800"
+                      : "bg-amber-900/80 text-amber-400 border border-amber-800"
                   }`}
                 >
-                  {isPublished ? 'Published' : 'Draft'}
+                  {isPublished ? "Published" : "Draft"}
                 </span>
                 {!isPublished && (
-                  <span className="text-xs text-gray-500">(Not publicly available)</span>
+                  <span className="text-xs text-gray-500">
+                    (Not publicly available)
+                  </span>
                 )}
               </div>
 
@@ -93,7 +105,9 @@ export default async function CoursePublicPage({ params }: PageProps) {
                 </div>
                 <div className="flex items-center gap-2 text-gray-400">
                   <Clock className="w-4 h-4" />
-                  <span>Updated {new Date(course.updatedAt).toLocaleDateString()}</span>
+                  <span>
+                    Updated {new Date(course.updatedAt).toLocaleDateString()}
+                  </span>
                 </div>
                 {course.instructorId && (
                   <div className="flex items-center gap-2 text-gray-400">
@@ -106,7 +120,9 @@ export default async function CoursePublicPage({ params }: PageProps) {
               {/* Price and Enroll Button */}
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <div className="text-3xl font-bold text-white">
-                  {course.price ? `${course.price.toLocaleString('vi-VN')} đ` : 'Free'}
+                  {course.price
+                    ? `${course.price.toLocaleString("vi-VN")} đ`
+                    : "Free"}
                 </div>
                 <EnrollButton
                   courseId={course.id}
@@ -115,7 +131,8 @@ export default async function CoursePublicPage({ params }: PageProps) {
                 />
                 {freeLessons > 0 && (
                   <span className="text-sm text-green-400">
-                    {freeLessons} free preview{freeLessons > 1 ? 's' : ''} available
+                    {freeLessons} free preview{freeLessons > 1 ? "s" : ""}{" "}
+                    available
                   </span>
                 )}
               </div>
@@ -143,7 +160,8 @@ export default async function CoursePublicPage({ params }: PageProps) {
           <div className="p-6 border-b border-gray-700">
             <h2 className="text-xl font-bold text-white">Course Content</h2>
             <p className="text-sm text-gray-400 mt-1">
-              {totalLessons} lessons • {freeLessons} free preview{freeLessons > 1 ? 's' : ''}
+              {totalLessons} lessons • {freeLessons} free preview
+              {freeLessons > 1 ? "s" : ""}
             </p>
           </div>
 
@@ -154,7 +172,10 @@ export default async function CoursePublicPage({ params }: PageProps) {
           ) : (
             <ul className="divide-y divide-gray-700">
               {course.lessons?.map((lesson, index) => (
-                <li key={lesson.id || index} className="p-4 hover:bg-gray-700/30 transition">
+                <li
+                  key={lesson.id || index}
+                  className="p-4 hover:bg-gray-700/30 transition"
+                >
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0 mt-1">
                       {lesson.isFreePreview ? (
@@ -206,7 +227,8 @@ export default async function CoursePublicPage({ params }: PageProps) {
             Ready to master this course?
           </h3>
           <p className="text-gray-400 mb-6 max-w-lg mx-auto">
-            Enroll now and get access to all lessons, quizzes, and learning materials.
+            Enroll now and get access to all lessons, quizzes, and learning
+            materials.
           </p>
           <EnrollButton
             courseId={course.id}

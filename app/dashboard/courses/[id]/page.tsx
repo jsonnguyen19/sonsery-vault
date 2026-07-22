@@ -65,22 +65,30 @@ export default async function CourseDetailPage({ params }: PageProps) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-sm text-gray-400">Status</p>
-              <p className="font-medium text-white">{course.status || "Draft"}</p>
+              <p className="font-medium text-white">
+                {course.status || "Draft"}
+              </p>
             </div>
             <div>
               <p className="text-sm text-gray-400">Price</p>
               <p className="font-medium text-white">
-                {course.price ? `${course.price.toLocaleString("vi-VN")} đ` : "Free"}
+                {course.price
+                  ? `${course.price.toLocaleString("vi-VN")} đ`
+                  : "Free"}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-400">Lessons</p>
-              <p className="font-medium text-white">{course.lessons?.length || 0}</p>
+              <p className="font-medium text-white">
+                {course.lessons?.length || 0}
+              </p>
             </div>
             <div>
               <p className="text-sm text-gray-400">Created</p>
               <p className="font-medium text-white">
-                {course.createdAt ? new Date(course.createdAt).toLocaleDateString() : "N/A"}
+                {course.createdAt
+                  ? new Date(course.createdAt).toLocaleDateString()
+                  : "N/A"}
               </p>
             </div>
           </div>
@@ -96,14 +104,30 @@ export default async function CourseDetailPage({ params }: PageProps) {
             <div>
               <p className="text-sm text-gray-400 mb-2">Lessons</p>
               <ul className="space-y-2">
-                {course.lessons.map((lesson: { title: string; description?: string; content?: string }, index: number) => (
-                  <li key={index} className="bg-gray-700/50 rounded-lg px-4 py-3 text-white">
-                    <p className="font-medium">{lesson.title || `Lesson ${index + 1}`}</p>
-                    {(lesson.description || lesson.content) && (
-                      <p className="text-sm text-gray-400 mt-1">{lesson.description || lesson.content}</p>
-                    )}
-                  </li>
-                ))}
+                {course.lessons.map(
+                  (
+                    lesson: {
+                      title: string;
+                      description?: string;
+                      content?: string;
+                    },
+                    index: number,
+                  ) => (
+                    <li
+                      key={index}
+                      className="bg-gray-700/50 rounded-lg px-4 py-3 text-white"
+                    >
+                      <p className="font-medium">
+                        {lesson.title || `Lesson ${index + 1}`}
+                      </p>
+                      {(lesson.description || lesson.content) && (
+                        <p className="text-sm text-gray-400 mt-1">
+                          {lesson.description || lesson.content}
+                        </p>
+                      )}
+                    </li>
+                  ),
+                )}
               </ul>
             </div>
           )}

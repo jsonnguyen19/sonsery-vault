@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { useAuth } from '@/components/auth/AuthProvider';
-import { useToast } from '@/components/ui/ToastContainer';
-import { useRouter } from 'next/navigation';
-import { notificationClient as notificationService } from '@/lib/services/notification.client';
-import type { Notification, CreateNotificationDTO } from '@/lib/types/notification';
+import { useEffect, useState } from "react";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { useToast } from "@/components/ui/ToastContainer";
+import { useRouter } from "next/navigation";
+import { notificationClient as notificationService } from "@/lib/services/notification.client";
+import type {
+  Notification,
+  CreateNotificationDTO,
+} from "@/lib/types/notification";
 import {
   Bell,
   Plus,
@@ -17,7 +20,7 @@ import {
   CheckCircle,
   AlertTriangle,
   Send,
-} from 'lucide-react';
+} from "lucide-react";
 
 const iconMap = {
   info: Info,
@@ -27,10 +30,10 @@ const iconMap = {
 };
 
 const typeColors = {
-  info: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
-  success: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-  warning: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-  error: 'text-red-400 bg-red-500/10 border-red-500/20',
+  info: "text-blue-400 bg-blue-500/10 border-blue-500/20",
+  success: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+  warning: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+  error: "text-red-400 bg-red-500/10 border-red-500/20",
 };
 
 export default function DashboardNotificationsPage() {
@@ -41,20 +44,22 @@ export default function DashboardNotificationsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<CreateNotificationDTO & { userId: string }>({
-    title: '',
-    message: '',
-    type: 'info',
-    link: '',
-    userId: '',
+  const [formData, setFormData] = useState<
+    CreateNotificationDTO & { userId: string }
+  >({
+    title: "",
+    message: "",
+    type: "info",
+    link: "",
+    userId: "",
   });
   const [users, setUsers] = useState<{ uid: string; email: string }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!loading && !isAdmin) {
-      toast.error('You do not have permission to access this page');
-      router.push('/dashboard');
+      toast.error("You do not have permission to access this page");
+      router.push("/dashboard");
     }
   }, [loading, isAdmin, router, toast]);
 
@@ -63,8 +68,8 @@ export default function DashboardNotificationsPage() {
       const data = await notificationService.getAllNotifications();
       setNotifications(data);
     } catch (error) {
-      console.error('Error fetching notifications:', error);
-      toast.error('Failed to load notifications');
+      console.error("Error fetching notifications:", error);
+      toast.error("Failed to load notifications");
     } finally {
       setIsLoading(false);
     }
@@ -72,13 +77,13 @@ export default function DashboardNotificationsPage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('/api/admin/users');
+      const response = await fetch("/api/admin/users");
       if (response.ok) {
         const data = await response.json();
         setUsers(data);
       }
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error("Error fetching users:", error);
     }
   };
 
@@ -87,9 +92,11 @@ export default function DashboardNotificationsPage() {
       fetchNotifications();
       fetchUsers();
 
-      const unsubscribe = notificationService.subscribeToAllNotifications((data) => {
-        setNotifications(data);
-      });
+      const unsubscribe = notificationService.subscribeToAllNotifications(
+        (data) => {
+          setNotifications(data);
+        },
+      );
 
       return () => unsubscribe();
     }
@@ -97,18 +104,18 @@ export default function DashboardNotificationsPage() {
 
   const handleCreate = async () => {
     if (!formData.title || !formData.message || !formData.userId) {
-      toast.error('Please fill in all required fields');
+      toast.error("Please fill in all required fields");
       return;
     }
 
     setIsSubmitting(true);
     try {
       await notificationService.create(formData);
-      toast.success('Notification created successfully');
+      toast.success("Notification created successfully");
       resetForm();
     } catch (error) {
-      console.error('Error creating notification:', error);
-      toast.error('Failed to create notification');
+      console.error("Error creating notification:", error);
+      toast.error("Failed to create notification");
     } finally {
       setIsSubmitting(false);
     }
@@ -117,32 +124,32 @@ export default function DashboardNotificationsPage() {
   const handleUpdate = async () => {
     if (!editingId) return;
     if (!formData.title || !formData.message || !formData.userId) {
-      toast.error('Please fill in all required fields');
+      toast.error("Please fill in all required fields");
       return;
     }
 
     setIsSubmitting(true);
     try {
       await notificationService.update(editingId, formData);
-      toast.success('Notification updated successfully');
+      toast.success("Notification updated successfully");
       resetForm();
     } catch (error) {
-      console.error('Error updating notification:', error);
-      toast.error('Failed to update notification');
+      console.error("Error updating notification:", error);
+      toast.error("Failed to update notification");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this notification?')) return;
+    if (!confirm("Are you sure you want to delete this notification?")) return;
 
     try {
       await notificationService.delete(id);
-      toast.success('Notification deleted successfully');
+      toast.success("Notification deleted successfully");
     } catch (error) {
-      console.error('Error deleting notification:', error);
-      toast.error('Failed to delete notification');
+      console.error("Error deleting notification:", error);
+      toast.error("Failed to delete notification");
     }
   };
 
@@ -152,7 +159,7 @@ export default function DashboardNotificationsPage() {
       title: notification.title,
       message: notification.message,
       type: notification.type,
-      link: notification.link || '',
+      link: notification.link || "",
       userId: notification.userId,
     });
     setShowModal(true);
@@ -162,11 +169,11 @@ export default function DashboardNotificationsPage() {
     setShowModal(false);
     setEditingId(null);
     setFormData({
-      title: '',
-      message: '',
-      type: 'info',
-      link: '',
-      userId: '',
+      title: "",
+      message: "",
+      type: "info",
+      link: "",
+      userId: "",
     });
   };
 
@@ -205,7 +212,9 @@ export default function DashboardNotificationsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
           <p className="text-sm text-gray-400">Total</p>
-          <p className="text-2xl font-bold text-white">{notifications.length}</p>
+          <p className="text-2xl font-bold text-white">
+            {notifications.length}
+          </p>
         </div>
         <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
           <p className="text-sm text-gray-400">Unread</p>
@@ -258,10 +267,14 @@ export default function DashboardNotificationsPage() {
               <tbody className="divide-y divide-gray-700">
                 {notifications.map((notification) => {
                   const Icon = iconMap[notification.type] || Info;
-                  const colorClass = typeColors[notification.type] || typeColors.info;
+                  const colorClass =
+                    typeColors[notification.type] || typeColors.info;
 
                   return (
-                    <tr key={notification.id} className="hover:bg-gray-700/50 transition-colors">
+                    <tr
+                      key={notification.id}
+                      className="hover:bg-gray-700/50 transition-colors"
+                    >
                       <td className="px-4 py-3">
                         <div
                           className={`w-8 h-8 rounded-lg flex items-center justify-center ${colorClass}`}
@@ -288,16 +301,18 @@ export default function DashboardNotificationsPage() {
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                             notification.read
-                              ? 'bg-gray-600 text-gray-300'
-                              : 'bg-blue-500/20 text-blue-400'
+                              ? "bg-gray-600 text-gray-300"
+                              : "bg-blue-500/20 text-blue-400"
                           }`}
                         >
-                          {notification.read ? 'Read' : 'Unread'}
+                          {notification.read ? "Read" : "Unread"}
                         </span>
                       </td>
                       <td className="px-4 py-3">
                         <p className="text-sm text-gray-400">
-                          {new Date(notification.createdAt).toLocaleDateString()}
+                          {new Date(
+                            notification.createdAt,
+                          ).toLocaleDateString()}
                         </p>
                       </td>
                       <td className="px-4 py-3 text-right">
@@ -332,7 +347,7 @@ export default function DashboardNotificationsPage() {
           <div className="bg-gray-800 rounded-xl border border-gray-700 w-full max-w-md p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-white">
-                {editingId ? 'Edit Notification' : 'Create Notification'}
+                {editingId ? "Edit Notification" : "Create Notification"}
               </h2>
               <button
                 onClick={resetForm}
@@ -382,7 +397,8 @@ export default function DashboardNotificationsPage() {
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      type: e.target.value as 'info' | 'success' | 'warning' | 'error',
+                      type: e.target.value as
+                        "info" | "success" | "warning" | "error",
                     })
                   }
                   className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -443,11 +459,7 @@ export default function DashboardNotificationsPage() {
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Send className="w-4 h-4" />
-                {isSubmitting
-                  ? 'Sending...'
-                  : editingId
-                  ? 'Update'
-                  : 'Send'}
+                {isSubmitting ? "Sending..." : editingId ? "Update" : "Send"}
               </button>
             </div>
           </div>

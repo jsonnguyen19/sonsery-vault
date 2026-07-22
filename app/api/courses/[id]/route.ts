@@ -43,10 +43,7 @@ export async function PUT(
 
     if (!doc.exists) {
       console.log("[API DEBUG] Course not found");
-      return NextResponse.json(
-        { error: "Course not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "Course not found" }, { status: 404 });
     }
 
     // Update only allowed fields
@@ -82,8 +79,7 @@ export async function PUT(
 
     return NextResponse.json({ message: "Course updated successfully!" });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unknown error";
+    const message = error instanceof Error ? error.message : "Unknown error";
     console.error("[API DEBUG] Error:", error);
     return NextResponse.json({ error: message }, { status: 500 });
   }

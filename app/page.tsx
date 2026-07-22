@@ -5,18 +5,19 @@ import { BookOpen, Sparkles, TrendingUp, Users } from "lucide-react";
 
 async function getCourses() {
   try {
-    const snapshot = await adminDb
-      .collection("courses")
-      .get();
+    const snapshot = await adminDb.collection("courses").get();
     const allCourses = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     })) as Course[];
-    
+
     // Filter published courses and sort by createdAt
     return allCourses
       .filter((course) => course.status === "published")
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )
       .slice(0, 6);
   } catch (error) {
     console.error("Error fetching courses:", error);
@@ -37,7 +38,9 @@ export default async function HomePage() {
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-1.5 mb-6">
               <Sparkles className="w-4 h-4 text-blue-400" />
-              <span className="text-sm text-blue-400 font-medium">Learn anything, anywhere</span>
+              <span className="text-sm text-blue-400 font-medium">
+                Learn anything, anywhere
+              </span>
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
               Master new skills with{" "}
@@ -46,8 +49,8 @@ export default async function HomePage() {
               </span>
             </h1>
             <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
-              Explore our curated collection of courses designed to help you grow.
-              Learn from experts and join thousands of students worldwide.
+              Explore our curated collection of courses designed to help you
+              grow. Learn from experts and join thousands of students worldwide.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
               <a
@@ -106,16 +109,30 @@ export default async function HomePage() {
             className="text-sm text-blue-400 hover:text-blue-300 font-medium transition flex items-center gap-1"
           >
             View all
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </a>
         </div>
 
         {courses.length === 0 ? (
           <div className="bg-gray-800/50 rounded-xl border border-gray-700 p-12 text-center">
-            <p className="text-gray-400 text-sm mb-4">No published courses available yet.</p>
-            <p className="text-xs text-gray-500">Check back soon for new courses!</p>
+            <p className="text-gray-400 text-sm mb-4">
+              No published courses available yet.
+            </p>
+            <p className="text-xs text-gray-500">
+              Check back soon for new courses!
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -133,15 +150,26 @@ export default async function HomePage() {
             Ready to start learning?
           </h3>
           <p className="text-gray-400 mb-6 max-w-lg mx-auto">
-            Join thousands of students and get access to premium courses with expert instructors.
+            Join thousands of students and get access to premium courses with
+            expert instructors.
           </p>
           <a
             href="/signup"
             className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40"
           >
             Get Started Now
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
             </svg>
           </a>
         </div>

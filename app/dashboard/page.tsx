@@ -45,7 +45,9 @@ export default function DashboardPage() {
       </div>
 
       <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h2 className="text-lg font-semibold text-white mb-4">Recent Activity</h2>
+        <h2 className="text-lg font-semibold text-white mb-4">
+          Recent Activity
+        </h2>
         <p className="text-gray-400">No recent activity to display.</p>
       </div>
 
@@ -54,7 +56,9 @@ export default function DashboardPage() {
         <div className="space-y-3">
           <div>
             <p className="text-sm text-gray-400">Email</p>
-            <p className="font-medium text-white">{user?.email || user?.providerData?.[0]?.email || 'No email'}</p>
+            <p className="font-medium text-white">
+              {user?.email || user?.providerData?.[0]?.email || "No email"}
+            </p>
           </div>
           <div>
             <p className="text-sm text-gray-400">User ID</p>
@@ -68,9 +72,7 @@ export default function DashboardPage() {
           </div>
           <div>
             <p className="text-sm text-gray-400">Role</p>
-            <p className="font-medium text-white">
-              {role || "user"}
-            </p>
+            <p className="font-medium text-white">{role || "user"}</p>
           </div>
         </div>
       </div>

@@ -28,14 +28,14 @@ export async function GET(req: Request) {
       courses = courses.filter(
         (c) =>
           c.title.toLowerCase().includes(searchLower) ||
-          c.description?.toLowerCase().includes(searchLower)
+          c.description?.toLowerCase().includes(searchLower),
       );
     }
 
     // Sort by createdAt desc
     courses.sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
 
     // Pagination
@@ -58,7 +58,7 @@ export async function GET(req: Request) {
     console.error("Error fetching courses list:", error);
     return NextResponse.json(
       { error: "Failed to fetch courses" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   BookOpen,
@@ -11,8 +11,8 @@ import {
   Shield,
   BarChart3,
   TrendingUp,
-} from 'lucide-react';
-import { useAuth } from '@/components/auth/AuthProvider';
+} from "lucide-react";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 interface NavItem {
   name: string;
@@ -23,12 +23,22 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, exactMatch: true },
-  { name: 'Courses', href: '/dashboard/courses', icon: BookOpen },
-  { name: 'Progress', href: '/dashboard/progress', icon: TrendingUp },
-  { name: 'Notifications', href: '/dashboard/notifications', icon: Bell },
-  { name: 'Settings', href: '/dashboard/settings', icon: Settings },
-  { name: 'Admin', href: '/dashboard/admin/users', icon: Shield, adminOnly: true },
+  {
+    name: "Dashboard",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+    exactMatch: true,
+  },
+  { name: "Courses", href: "/dashboard/courses", icon: BookOpen },
+  { name: "Progress", href: "/dashboard/progress", icon: TrendingUp },
+  { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
+  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  {
+    name: "Admin",
+    href: "/dashboard/admin/users",
+    icon: Shield,
+    adminOnly: true,
+  },
 ];
 
 export default function Sidebar() {
@@ -36,17 +46,17 @@ export default function Sidebar() {
   const { isAdmin } = useAuth();
 
   const filteredItems = navItems.filter(
-    (item) => !item.adminOnly || (item.adminOnly && isAdmin)
+    (item) => !item.adminOnly || (item.adminOnly && isAdmin),
   );
 
   const isActive = (item: NavItem) => {
     if (item.exactMatch) {
       return pathname === item.href;
     }
-    if (item.href === '/dashboard') {
-      return pathname === '/dashboard';
+    if (item.href === "/dashboard") {
+      return pathname === "/dashboard";
     }
-    return pathname?.startsWith(item.href + '/') || pathname === item.href;
+    return pathname?.startsWith(item.href + "/") || pathname === item.href;
   };
 
   return (
@@ -69,8 +79,8 @@ export default function Sidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ${
                 active
-                  ? 'bg-blue-600/20 text-blue-400 border border-blue-600/30'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                  ? "bg-blue-600/20 text-blue-400 border border-blue-600/30"
+                  : "text-gray-400 hover:text-white hover:bg-gray-800"
               }`}
             >
               <Icon className="w-4 h-4" />

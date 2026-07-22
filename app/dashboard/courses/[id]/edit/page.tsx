@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useToast } from "@/components/ui/ToastContainer";
 
-
 interface Lesson {
   title: string;
   content?: string;
@@ -156,7 +155,9 @@ export default function EditCoursePage({ params }: PageProps) {
             </label>
             <textarea
               value={course.description}
-              onChange={(e) => setCourse({ ...course, description: e.target.value })}
+              onChange={(e) =>
+                setCourse({ ...course, description: e.target.value })
+              }
               rows={3}
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
             />
@@ -170,7 +171,9 @@ export default function EditCoursePage({ params }: PageProps) {
               <input
                 type="number"
                 value={course.price}
-                onChange={(e) => setCourse({ ...course, price: Number(e.target.value) })}
+                onChange={(e) =>
+                  setCourse({ ...course, price: Number(e.target.value) })
+                }
                 className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
                 min={0}
               />
@@ -181,7 +184,9 @@ export default function EditCoursePage({ params }: PageProps) {
               </label>
               <select
                 value={course.status}
-                onChange={(e) => setCourse({ ...course, status: e.target.value })}
+                onChange={(e) =>
+                  setCourse({ ...course, status: e.target.value })
+                }
                 className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
               >
                 <option value="draft">Draft</option>
@@ -213,7 +218,12 @@ export default function EditCoursePage({ params }: PageProps) {
               onChange={async (e) => {
                 const file = e.target.files?.[0];
                 if (!file) return;
-                console.log("[DEBUG] Selected file:", file.name, file.type, file.size);
+                console.log(
+                  "[DEBUG] Selected file:",
+                  file.name,
+                  file.type,
+                  file.size,
+                );
                 try {
                   // Upload new thumbnail
                   console.log("[DEBUG] Requesting presigned URL...");
@@ -235,18 +245,29 @@ export default function EditCoursePage({ params }: PageProps) {
                     headers: { "Content-Type": file.type },
                     body: file,
                   });
-                  console.log("[DEBUG] R2 upload response status:", uploadRes.status);
-                  console.log("[DEBUG] R2 upload response headers:", Object.fromEntries(uploadRes.headers.entries()));
+                  console.log(
+                    "[DEBUG] R2 upload response status:",
+                    uploadRes.status,
+                  );
+                  console.log(
+                    "[DEBUG] R2 upload response headers:",
+                    Object.fromEntries(uploadRes.headers.entries()),
+                  );
                   const responseText = await uploadRes.text();
                   console.log("[DEBUG] R2 upload response body:", responseText);
                   if (!uploadRes.ok) {
-                    throw new Error(`R2 upload failed with status ${uploadRes.status}: ${responseText}`);
+                    throw new Error(
+                      `R2 upload failed with status ${uploadRes.status}: ${responseText}`,
+                    );
                   }
                   if (!uploadRes.ok) throw new Error("Upload to R2 failed");
 
                   console.log("[DEBUG] Upload successful! Key:", data.key);
                   setCourse({ ...course, thumbnailKey: data.key });
-                  console.log("[DEBUG] Course state updated with new thumbnailKey:", data.key);
+                  console.log(
+                    "[DEBUG] Course state updated with new thumbnailKey:",
+                    data.key,
+                  );
                   toast.success("Thumbnail uploaded successfully!");
                 } catch (error) {
                   console.error("[DEBUG] Error uploading thumbnail:", error);
@@ -255,7 +276,9 @@ export default function EditCoursePage({ params }: PageProps) {
               }}
               className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer border border-gray-600 rounded-lg bg-gray-700"
             />
-            <p className="text-xs text-gray-500 mt-1">Upload a new image to replace the current thumbnail</p>
+            <p className="text-xs text-gray-500 mt-1">
+              Upload a new image to replace the current thumbnail
+            </p>
           </div>
         </div>
 
@@ -276,7 +299,10 @@ export default function EditCoursePage({ params }: PageProps) {
           ) : (
             <div className="space-y-3">
               {course.lessons.map((lesson, index) => (
-                <div key={index} className="bg-gray-700/50 rounded-lg p-4 space-y-2">
+                <div
+                  key={index}
+                  className="bg-gray-700/50 rounded-lg p-4 space-y-2"
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-gray-300">
                       Lesson {index + 1}
@@ -292,13 +318,17 @@ export default function EditCoursePage({ params }: PageProps) {
                   <input
                     type="text"
                     value={lesson.title}
-                    onChange={(e) => updateLesson(index, "title", e.target.value)}
+                    onChange={(e) =>
+                      updateLesson(index, "title", e.target.value)
+                    }
                     placeholder="Lesson title"
                     className="w-full px-3 py-1.5 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:outline-none focus:border-blue-500"
                   />
                   <textarea
                     value={lesson.content || ""}
-                    onChange={(e) => updateLesson(index, "content", e.target.value)}
+                    onChange={(e) =>
+                      updateLesson(index, "content", e.target.value)
+                    }
                     placeholder="Lesson content"
                     rows={2}
                     className="w-full px-3 py-1.5 bg-gray-600 border border-gray-500 rounded text-white text-sm focus:outline-none focus:border-blue-500"

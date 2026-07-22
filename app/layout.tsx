@@ -18,7 +18,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Sonsery - Learn anything, anywhere",
-  description: "Explore our curated collection of courses designed to help you grow. Learn from experts and join thousands of students worldwide.",
+  description:
+    "Explore our curated collection of courses designed to help you grow. Learn from experts and join thousands of students worldwide.",
 };
 
 export default function RootLayout({
@@ -28,7 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <ToastProvider>
           <AuthProvider>
             <PublicHeader />

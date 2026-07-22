@@ -40,10 +40,10 @@ export default function SignupPage() {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
       console.log(
-        `[Client Signup] Account created for ${userCredential.user.email}`
+        `[Client Signup] Account created for ${userCredential.user.email}`,
       );
 
       const idToken = await getIdToken(userCredential.user);
@@ -80,7 +80,7 @@ export default function SignupPage() {
       const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
       console.log(
-        `[Client Signup] Google signup successful for ${userCredential.user.email}`
+        `[Client Signup] Google signup successful for ${userCredential.user.email}`,
       );
 
       const idToken = await getIdToken(userCredential.user);
@@ -101,7 +101,8 @@ export default function SignupPage() {
       router.push("/dashboard");
     } catch (err) {
       console.error("[Client Signup] Google signup error:", err);
-      const errorMessage = err instanceof Error ? err.message : "Google signup failed";
+      const errorMessage =
+        err instanceof Error ? err.message : "Google signup failed";
       setError(errorMessage);
     } finally {
       setLoading(false);

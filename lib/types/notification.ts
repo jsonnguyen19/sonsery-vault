@@ -2,7 +2,7 @@ export interface Notification {
   id: string;
   title: string;
   message: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: "info" | "success" | "warning" | "error";
   link?: string;
   read: boolean;
   userId: string;
@@ -13,7 +13,7 @@ export interface Notification {
 export interface CreateNotificationDTO {
   title: string;
   message: string;
-  type?: 'info' | 'success' | 'warning' | 'error';
+  type?: "info" | "success" | "warning" | "error";
   link?: string;
   userId: string;
 }
@@ -21,7 +21,7 @@ export interface CreateNotificationDTO {
 export interface UpdateNotificationDTO {
   title?: string;
   message?: string;
-  type?: 'info' | 'success' | 'warning' | 'error';
+  type?: "info" | "success" | "warning" | "error";
   link?: string;
   read?: boolean;
 }

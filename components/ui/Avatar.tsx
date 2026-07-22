@@ -1,6 +1,5 @@
 "use client";
 
-
 import { User } from "firebase/auth";
 
 interface AvatarProps {
@@ -9,7 +8,11 @@ interface AvatarProps {
   className?: string;
 }
 
-export default function Avatar({ user, size = "md", className = "" }: AvatarProps) {
+export default function Avatar({
+  user,
+  size = "md",
+  className = "",
+}: AvatarProps) {
   const sizeClasses = {
     sm: "w-8 h-8 text-sm",
     md: "w-10 h-10 text-base",

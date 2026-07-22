@@ -3,14 +3,20 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { useRouter } from "next/navigation";
-import { Shield, ShieldAlert, User, Users as UsersIcon, RefreshCw } from "lucide-react";
+import {
+  Shield,
+  ShieldAlert,
+  User,
+  Users as UsersIcon,
+  RefreshCw,
+} from "lucide-react";
 
 interface User {
   uid: string;
   email: string;
   displayName: string;
   photoURL?: string;
-  role: 'admin' | 'user';
+  role: "admin" | "user";
   disabled: boolean;
   createdAt?: string;
   lastSignIn?: string;
@@ -55,7 +61,7 @@ export default function AdminUsersPage() {
     }
   };
 
-  const updateUserRole = async (uid: string, newRole: 'admin' | 'user') => {
+  const updateUserRole = async (uid: string, newRole: "admin" | "user") => {
     setUpdating(uid);
     setError(null);
     try {
@@ -72,9 +78,7 @@ export default function AdminUsersPage() {
 
       // Update local state
       setUsers((prev) =>
-        prev.map((u) =>
-          u.uid === uid ? { ...u, role: newRole } : u
-        )
+        prev.map((u) => (u.uid === uid ? { ...u, role: newRole } : u)),
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update role");
@@ -97,14 +101,18 @@ export default function AdminUsersPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">User Management</h1>
-          <p className="text-gray-400 mt-1">Manage user roles and permissions</p>
+          <p className="text-gray-400 mt-1">
+            Manage user roles and permissions
+          </p>
         </div>
         <button
           onClick={fetchUsers}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
           disabled={loadingUsers}
         >
-          <RefreshCw className={`w-4 h-4 ${loadingUsers ? "animate-spin" : ""}`} />
+          <RefreshCw
+            className={`w-4 h-4 ${loadingUsers ? "animate-spin" : ""}`}
+          />
           Refresh
         </button>
       </div>
@@ -152,7 +160,10 @@ export default function AdminUsersPage() {
                 </tr>
               ) : (
                 users.map((user) => (
-                  <tr key={user.uid} className="hover:bg-gray-800/50 transition-colors">
+                  <tr
+                    key={user.uid}
+                    className="hover:bg-gray-800/50 transition-colors"
+                  >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
@@ -168,8 +179,12 @@ export default function AdminUsersPage() {
                           )}
                         </div>
                         <div>
-                          <p className="font-medium text-white">{user.displayName}</p>
-                          <p className="text-xs text-gray-500 font-mono">{user.uid.slice(0, 12)}...</p>
+                          <p className="font-medium text-white">
+                            {user.displayName}
+                          </p>
+                          <p className="text-xs text-gray-500 font-mono">
+                            {user.uid.slice(0, 12)}...
+                          </p>
                         </div>
                       </div>
                     </td>
@@ -198,7 +213,9 @@ export default function AdminUsersPage() {
                             : "bg-green-900/50 text-green-300 border border-green-700"
                         }`}
                       >
-                        <span className={`w-1.5 h-1.5 rounded-full ${user.disabled ? "bg-red-400" : "bg-green-400"}`} />
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${user.disabled ? "bg-red-400" : "bg-green-400"}`}
+                        />
                         {user.disabled ? "Disabled" : "Active"}
                       </span>
                     </td>
@@ -207,10 +224,15 @@ export default function AdminUsersPage() {
                         {user.role === "admin" ? (
                           <button
                             onClick={() => updateUserRole(user.uid, "user")}
-                            disabled={updating === user.uid || user.uid === currentUserUid}
+                            disabled={
+                              updating === user.uid ||
+                              user.uid === currentUserUid
+                            }
                             className="px-3 py-1.5 text-xs font-medium text-yellow-300 hover:text-yellow-200 bg-yellow-900/30 hover:bg-yellow-900/50 border border-yellow-700/50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            {updating === user.uid ? "Updating..." : "Remove Admin"}
+                            {updating === user.uid
+                              ? "Updating..."
+                              : "Remove Admin"}
                           </button>
                         ) : (
                           <button
@@ -218,7 +240,9 @@ export default function AdminUsersPage() {
                             disabled={updating === user.uid}
                             className="px-3 py-1.5 text-xs font-medium text-purple-300 hover:text-purple-200 bg-purple-900/30 hover:bg-purple-900/50 border border-purple-700/50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            {updating === user.uid ? "Updating..." : "Make Admin"}
+                            {updating === user.uid
+                              ? "Updating..."
+                              : "Make Admin"}
                           </button>
                         )}
                       </div>
@@ -231,7 +255,8 @@ export default function AdminUsersPage() {
         </div>
         <div className="px-4 py-3 border-t border-gray-800 bg-gray-950/30">
           <p className="text-sm text-gray-400">
-            Total users: <span className="text-white font-medium">{users.length}</span>
+            Total users:{" "}
+            <span className="text-white font-medium">{users.length}</span>
           </p>
         </div>
       </div>

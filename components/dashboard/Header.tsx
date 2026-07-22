@@ -53,9 +53,7 @@ export default function Header() {
                 <p className="text-sm font-medium text-white truncate">
                   {user?.displayName || "User"}
                 </p>
-                <p className="text-xs text-gray-400 truncate">
-                  {user?.email}
-                </p>
+                <p className="text-xs text-gray-400 truncate">{user?.email}</p>
               </div>
               <div className="py-1">
                 <button

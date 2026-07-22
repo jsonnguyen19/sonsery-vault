@@ -1,14 +1,14 @@
-import { adminDb } from '@/lib/firebase-admin';
-import { EnrollmentService } from '@/lib/services/enrollment';
-import { getCurrentUser } from '@/lib/auth/session';
-import { notFound, redirect } from 'next/navigation';
-import Link from 'next/link';
-import CoursePlayer from '@/components/ui/CoursePlayer';
-import type { Course } from '@/lib/types/course';
-import type { CourseProgress } from '@/lib/types/enrollment';
+import { adminDb } from "@/lib/firebase-admin";
+import { EnrollmentService } from "@/lib/services/enrollment";
+import { getCurrentUser } from "@/lib/auth/session";
+import { notFound, redirect } from "next/navigation";
+import Link from "next/link";
+import CoursePlayer from "@/components/ui/CoursePlayer";
+import type { Course } from "@/lib/types/course";
+import type { CourseProgress } from "@/lib/types/enrollment";
 
 async function getCourseAndProgress(courseId: string, userId: string) {
-  const courseDoc = await adminDb.collection('courses').doc(courseId).get();
+  const courseDoc = await adminDb.collection("courses").doc(courseId).get();
   if (!courseDoc.exists) return { course: null, progress: null };
 
   const course = { id: courseDoc.id, ...courseDoc.data() } as Course;
@@ -29,7 +29,7 @@ export default async function CourseLearnPage({ params }: PageProps) {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect('/login');
+    redirect("/login");
   }
 
   const { course, progress } = await getCourseAndProgress(courseId, user.uid);
@@ -40,7 +40,10 @@ export default async function CourseLearnPage({ params }: PageProps) {
 
   // Check if user is enrolled
   const enrollment = await EnrollmentService.getEnrollment(user.uid, courseId);
-  if (!enrollment || (enrollment.status !== 'active' && enrollment.status !== 'completed')) {
+  if (
+    !enrollment ||
+    (enrollment.status !== "active" && enrollment.status !== "completed")
+  ) {
     redirect(`/courses/${course.slug}`);
   }
 
@@ -50,7 +53,7 @@ export default async function CourseLearnPage({ params }: PageProps) {
     : 0;
 
   // Check if course is completed
-  const isCourseCompleted = enrollment.status === 'completed';
+  const isCourseCompleted = enrollment.status === "completed";
 
   return (
     <div className="min-h-screen bg-gray-950">
@@ -94,7 +97,9 @@ export default async function CourseLearnPage({ params }: PageProps) {
               {course.lessons && course.lessons.length > 0 ? (
                 <div className="space-y-3">
                   {course.lessons.map((lesson, index) => {
-                    const isCompleted = progress?.lessons[lesson.id || `lesson-${index}`]?.completed || false;
+                    const isCompleted =
+                      progress?.lessons[lesson.id || `lesson-${index}`]
+                        ?.completed || false;
                     // When enrolled, all lessons are unlocked (no sequential locking)
                     const isLocked = false;
 
@@ -113,7 +118,9 @@ export default async function CourseLearnPage({ params }: PageProps) {
                   })}
                 </div>
               ) : (
-                <p className="text-gray-400 text-center py-8">No lessons available</p>
+                <p className="text-gray-400 text-center py-8">
+                  No lessons available
+                </p>
               )}
             </div>
           </div>
@@ -129,7 +136,7 @@ export default async function CourseLearnPage({ params }: PageProps) {
                 <div>
                   <p className="text-xs text-gray-500">Status</p>
                   <p className="text-sm text-white font-medium">
-                    {isCourseCompleted ? '✅ Completed' : 'In Progress'}
+                    {isCourseCompleted ? "✅ Completed" : "In Progress"}
                   </p>
                 </div>
                 <div>
@@ -161,11 +168,15 @@ export default async function CourseLearnPage({ params }: PageProps) {
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-2xl font-bold text-white">{completedLessons}</p>
+                  <p className="text-2xl font-bold text-white">
+                    {completedLessons}
+                  </p>
                   <p className="text-xs text-gray-500">Completed</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-white">{totalLessons}</p>
+                  <p className="text-2xl font-bold text-white">
+                    {totalLessons}
+                  </p>
                   <p className="text-xs text-gray-500">Total</p>
                 </div>
               </div>

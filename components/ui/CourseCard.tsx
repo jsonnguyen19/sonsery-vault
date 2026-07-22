@@ -49,18 +49,24 @@ export default function CourseCard({
                     course.status === "published"
                       ? "bg-green-900/80 text-green-400 border border-green-800"
                       : course.status === "archived"
-                      ? "bg-red-900/80 text-red-400 border border-red-800"
-                      : "bg-amber-900/80 text-amber-400 border border-amber-800"
+                        ? "bg-red-900/80 text-red-400 border border-red-800"
+                        : "bg-amber-900/80 text-amber-400 border border-amber-800"
                   }
                 `}
               >
-                {course.status === "published" ? "Published" : course.status === "archived" ? "Archived" : "Draft"}
+                {course.status === "published"
+                  ? "Published"
+                  : course.status === "archived"
+                    ? "Archived"
+                    : "Draft"}
               </span>
             </div>
             {/* Price badge */}
             <div className="absolute bottom-3 right-3">
               <span className="bg-black/60 backdrop-blur-sm text-white text-sm font-bold px-3 py-1.5 rounded-lg">
-                {course.price ? `${course.price.toLocaleString("vi-VN")} đ` : "Free"}
+                {course.price
+                  ? `${course.price.toLocaleString("vi-VN")} đ`
+                  : "Free"}
               </span>
             </div>
           </div>
@@ -84,7 +90,9 @@ export default function CourseCard({
             </div>
             <div className="flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" />
-              <span>Updated {new Date(course.updatedAt).toLocaleDateString()}</span>
+              <span>
+                Updated {new Date(course.updatedAt).toLocaleDateString()}
+              </span>
             </div>
           </div>
 

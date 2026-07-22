@@ -4,12 +4,9 @@ import { getCurrentUser } from "@/lib/auth/session";
 export async function GET() {
   try {
     const user = await getCurrentUser();
-    
+
     if (!user) {
-      return NextResponse.json(
-        { authenticated: false },
-        { status: 401 }
-      );
+      return NextResponse.json({ authenticated: false }, { status: 401 });
     }
 
     return NextResponse.json({
@@ -23,7 +20,7 @@ export async function GET() {
     console.error("[API Auth Me] Error:", error);
     return NextResponse.json(
       { error: "Failed to get user info" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

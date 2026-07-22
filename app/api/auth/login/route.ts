@@ -12,29 +12,26 @@ export async function POST(req: NextRequest) {
 
     if (!idToken) {
       console.log("[API Auth Login] Missing idToken in request body");
-      return NextResponse.json(
-        { error: "Missing idToken" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing idToken" }, { status: 400 });
     }
 
     console.log("[API Auth Login] Verifying idToken...");
     const decodedToken = await adminAuth.verifyIdToken(idToken);
     console.log(
-      `[API Auth Login] idToken verified successfully for UID: ${decodedToken.uid}`
+      `[API Auth Login] idToken verified successfully for UID: ${decodedToken.uid}`,
     );
 
     // Save or update user in Firestore
     try {
-      const userRef = adminDb.collection('users').doc(decodedToken.uid);
+      const userRef = adminDb.collection("users").doc(decodedToken.uid);
       const userDoc = await userRef.get();
-      
+
       const userData = {
         uid: decodedToken.uid,
-        email: decodedToken.email || '',
-        displayName: decodedToken.name || '',
-        photoURL: decodedToken.picture || '',
-        role: 'user', // Default role
+        email: decodedToken.email || "",
+        displayName: decodedToken.name || "",
+        photoURL: decodedToken.picture || "",
+        role: "user", // Default role
         updatedAt: new Date().toISOString(),
       };
 
@@ -42,14 +39,18 @@ export async function POST(req: NextRequest) {
         // New user
         userData.createdAt = new Date().toISOString();
         await userRef.set(userData);
-        console.log(`[API Auth Login] Created new user profile for UID: ${decodedToken.uid}`);
+        console.log(
+          `[API Auth Login] Created new user profile for UID: ${decodedToken.uid}`,
+        );
       } else {
         // Update existing user
         await userRef.update(userData);
-        console.log(`[API Auth Login] Updated user profile for UID: ${decodedToken.uid}`);
+        console.log(
+          `[API Auth Login] Updated user profile for UID: ${decodedToken.uid}`,
+        );
       }
     } catch (error) {
-      console.error('[API Auth Login] Error saving user profile:', error);
+      console.error("[API Auth Login] Error saving user profile:", error);
       // Continue even if user save fails
     }
 
@@ -60,7 +61,7 @@ export async function POST(req: NextRequest) {
 
     const response = NextResponse.json(
       { success: true, uid: decodedToken.uid },
-      { status: 200 }
+      { status: 200 },
     );
 
     response.cookies.set({
@@ -74,16 +75,14 @@ export async function POST(req: NextRequest) {
     });
 
     console.log(
-      `[API Auth Login] Session cookie created successfully for UID: ${decodedToken.uid}`
+      `[API Auth Login] Session cookie created successfully for UID: ${decodedToken.uid}`,
     );
 
     return response;
   } catch (error) {
     console.error("[API Auth Login Error]:", error);
-    const errorMessage = error instanceof Error ? error.message : "Authentication failed";
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: 401 }
-    );
+    const errorMessage =
+      error instanceof Error ? error.message : "Authentication failed";
+    return NextResponse.json({ error: errorMessage }, { status: 401 });
   }
 }

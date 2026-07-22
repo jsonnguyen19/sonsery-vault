@@ -14,11 +14,11 @@ export async function getCurrentUser(): Promise<DecodedIdToken | null> {
 
     const decodedClaims = await adminAuth.verifySessionCookie(
       sessionCookie.value,
-      true
+      true,
     );
 
     console.log(
-      `[Server Session] User authenticated: ${decodedClaims.uid} | Role: ${decodedClaims.role || "user"}`
+      `[Server Session] User authenticated: ${decodedClaims.uid} | Role: ${decodedClaims.role || "user"}`,
     );
 
     return decodedClaims;

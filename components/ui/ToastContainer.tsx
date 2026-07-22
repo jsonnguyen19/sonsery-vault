@@ -34,24 +34,28 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       const id = `toast-${++toastIdCounter}`;
       setToasts((prev) => [...prev, { id, message, type, duration }]);
     },
-    []
+    [],
   );
 
   const success = useCallback(
-    (message: string, duration?: number) => showToast(message, "success", duration),
-    [showToast]
+    (message: string, duration?: number) =>
+      showToast(message, "success", duration),
+    [showToast],
   );
   const error = useCallback(
-    (message: string, duration?: number) => showToast(message, "error", duration),
-    [showToast]
+    (message: string, duration?: number) =>
+      showToast(message, "error", duration),
+    [showToast],
   );
   const warning = useCallback(
-    (message: string, duration?: number) => showToast(message, "warning", duration),
-    [showToast]
+    (message: string, duration?: number) =>
+      showToast(message, "warning", duration),
+    [showToast],
   );
   const info = useCallback(
-    (message: string, duration?: number) => showToast(message, "info", duration),
-    [showToast]
+    (message: string, duration?: number) =>
+      showToast(message, "info", duration),
+    [showToast],
   );
 
   return (

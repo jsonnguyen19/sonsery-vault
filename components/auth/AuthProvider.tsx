@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsubscribe = onIdTokenChanged(auth, async (user) => {
       console.log(
-        `[Client Auth State] User state changed: ${user?.email || "null"}`
+        `[Client Auth State] User state changed: ${user?.email || "null"}`,
       );
 
       setUser(user);
@@ -134,7 +134,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isAdmin = role === "admin";
 
   return (
-    <AuthContext.Provider value={{ user, role, loading, logout, getIdToken, isAdmin }}>
+    <AuthContext.Provider
+      value={{ user, role, loading, logout, getIdToken, isAdmin }}
+    >
       {children}
     </AuthContext.Provider>
   );

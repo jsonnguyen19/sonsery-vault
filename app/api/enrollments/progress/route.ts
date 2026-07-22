@@ -1,23 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { EnrollmentService } from '@/lib/services/enrollment';
-import { getCurrentUser } from '@/lib/auth/session';
-import { ROLES } from '@/lib/auth/roles';
+import { NextRequest, NextResponse } from "next/server";
+import { EnrollmentService } from "@/lib/services/enrollment";
+import { getCurrentUser } from "@/lib/auth/session";
+import { ROLES } from "@/lib/auth/roles";
 
 export async function GET(req: NextRequest) {
   try {
     const user = await getCurrentUser();
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { searchParams } = new URL(req.url);
-    const courseId = searchParams.get('courseId');
-    const userId = searchParams.get('userId');
+    const courseId = searchParams.get("courseId");
+    const userId = searchParams.get("userId");
 
     if (courseId) {
       const progress = await EnrollmentService.getCourseProgress(
         userId || user.uid,
-        courseId
+        courseId,
       );
       return NextResponse.json({ progress });
     }
@@ -32,10 +32,10 @@ export async function GET(req: NextRequest) {
     const progressList = await EnrollmentService.getAllUserProgress(user.uid);
     return NextResponse.json({ progress: progressList });
   } catch (error) {
-    console.error('Error fetching progress:', error);
+    console.error("Error fetching progress:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch progress' },
-      { status: 500 }
+      { error: "Failed to fetch progress" },
+      { status: 500 },
     );
   }
 }
@@ -44,7 +44,7 @@ export async function PATCH(req: NextRequest) {
   try {
     const user = await getCurrentUser();
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await req.json();
@@ -53,9 +53,9 @@ export async function PATCH(req: NextRequest) {
     if (!courseId || !lessonId || completed === undefined) {
       return NextResponse.json(
         {
-          error: 'Missing required fields: courseId, lessonId, completed',
+          error: "Missing required fields: courseId, lessonId, completed",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -63,13 +63,13 @@ export async function PATCH(req: NextRequest) {
     const hasAccess = await EnrollmentService.hasLessonAccess(
       user.uid,
       courseId,
-      lessonId
+      lessonId,
     );
 
     if (!hasAccess) {
       return NextResponse.json(
-        { error: 'Access denied to this lesson' },
-        { status: 403 }
+        { error: "Access denied to this lesson" },
+        { status: 403 },
       );
     }
 
@@ -78,13 +78,14 @@ export async function PATCH(req: NextRequest) {
       courseId,
       lessonId,
       completed,
-      timeSpent
+      timeSpent,
     );
 
     return NextResponse.json({ progress });
   } catch (error) {
-    console.error('Error updating progress:', error);
-    const message = error instanceof Error ? error.message : 'Failed to update progress';
+    console.error("Error updating progress:", error);
+    const message =
+      error instanceof Error ? error.message : "Failed to update progress";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

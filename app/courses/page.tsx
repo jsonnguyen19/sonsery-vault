@@ -5,7 +5,14 @@ import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import CourseCard from "@/components/ui/CourseCard";
 import type { Course } from "@/lib/types/course";
-import { Search, Filter, X, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import {
+  Search,
+  Filter,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+} from "lucide-react";
 
 const PAGE_SIZE = 9;
 
@@ -41,13 +48,16 @@ export default function CoursesPage() {
         allCourses = allCourses.filter(
           (course) =>
             course.title?.toLowerCase().includes(search.toLowerCase()) ||
-            course.description?.toLowerCase().includes(search.toLowerCase())
+            course.description?.toLowerCase().includes(search.toLowerCase()),
         );
       }
 
       // Pagination
       const startIndex = (currentPage - 1) * PAGE_SIZE;
-      const paginatedCourses = allCourses.slice(startIndex, startIndex + PAGE_SIZE);
+      const paginatedCourses = allCourses.slice(
+        startIndex,
+        startIndex + PAGE_SIZE,
+      );
       const totalCourses = allCourses.length;
 
       setCourses(paginatedCourses);
@@ -96,7 +106,7 @@ export default function CoursesPage() {
       { value: "archived", label: "Archived" },
       { value: "", label: "All Status" },
     ],
-    []
+    [],
   );
 
   return (

@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { useAuth } from '@/components/auth/AuthProvider';
-import { notificationClient as notificationService } from '@/lib/services/notification.client';
-import type { Notification } from '@/lib/types/notification';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from "react";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { notificationClient as notificationService } from "@/lib/services/notification.client";
+import type { Notification } from "@/lib/types/notification";
+import { useRouter } from "next/navigation";
 import {
   Bell,
   Check,
@@ -15,8 +15,8 @@ import {
   AlertCircle,
   CheckCircle,
   AlertTriangle,
-} from 'lucide-react';
-import { useToast } from '@/components/ui/ToastContainer';
+} from "lucide-react";
+import { useToast } from "@/components/ui/ToastContainer";
 
 const iconMap = {
   info: Info,
@@ -26,10 +26,10 @@ const iconMap = {
 };
 
 const colorMap = {
-  info: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
-  success: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-  warning: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-  error: 'text-red-400 bg-red-500/10 border-red-500/20',
+  info: "text-blue-400 bg-blue-500/10 border-blue-500/20",
+  success: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+  warning: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+  error: "text-red-400 bg-red-500/10 border-red-500/20",
 };
 
 export default function NotificationsPage() {
@@ -41,7 +41,7 @@ export default function NotificationsPage() {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login');
+      router.push("/login");
       return;
     }
 
@@ -52,8 +52,8 @@ export default function NotificationsPage() {
         const data = await notificationService.getUserNotifications(user.uid);
         setNotifications(data);
       } catch (error) {
-        console.error('Error loading notifications:', error);
-        toast.error('Failed to load notifications');
+        console.error("Error loading notifications:", error);
+        toast.error("Failed to load notifications");
       } finally {
         setIsLoading(false);
       }
@@ -65,7 +65,7 @@ export default function NotificationsPage() {
       user.uid,
       (data) => {
         setNotifications(data);
-      }
+      },
     );
 
     return () => unsubscribe();
@@ -74,10 +74,10 @@ export default function NotificationsPage() {
   const handleMarkAsRead = async (id: string) => {
     try {
       await notificationService.markAsRead(id);
-      toast.success('Marked as read');
+      toast.success("Marked as read");
     } catch (error) {
-      console.error('Error marking as read:', error);
-      toast.error('Failed to mark as read');
+      console.error("Error marking as read:", error);
+      toast.error("Failed to mark as read");
     }
   };
 
@@ -85,20 +85,20 @@ export default function NotificationsPage() {
     if (!user) return;
     try {
       await notificationService.markAllAsRead(user.uid);
-      toast.success('All notifications marked as read');
+      toast.success("All notifications marked as read");
     } catch (error) {
-      console.error('Error marking all as read:', error);
-      toast.error('Failed to mark all as read');
+      console.error("Error marking all as read:", error);
+      toast.error("Failed to mark all as read");
     }
   };
 
   const handleDelete = async (id: string) => {
     try {
       await notificationService.delete(id);
-      toast.success('Notification deleted');
+      toast.success("Notification deleted");
     } catch (error) {
-      console.error('Error deleting notification:', error);
-      toast.error('Failed to delete notification');
+      console.error("Error deleting notification:", error);
+      toast.error("Failed to delete notification");
     }
   };
 
@@ -106,10 +106,10 @@ export default function NotificationsPage() {
     if (!user) return;
     try {
       await notificationService.deleteAll(user.uid);
-      toast.success('All notifications cleared');
+      toast.success("All notifications cleared");
     } catch (error) {
-      console.error('Error clearing notifications:', error);
-      toast.error('Failed to clear notifications');
+      console.error("Error clearing notifications:", error);
+      toast.error("Failed to clear notifications");
     }
   };
 
@@ -179,8 +179,8 @@ export default function NotificationsPage() {
                   key={notification.id}
                   className={`bg-gray-800/50 border rounded-xl p-4 transition-all ${
                     notification.read
-                      ? 'border-gray-700/50 opacity-75'
-                      : 'border-blue-500/30 bg-blue-900/10'
+                      ? "border-gray-700/50 opacity-75"
+                      : "border-blue-500/30 bg-blue-900/10"
                   }`}
                 >
                   <div className="flex items-start gap-4">
@@ -194,7 +194,7 @@ export default function NotificationsPage() {
                         <div>
                           <h3
                             className={`text-sm font-semibold ${
-                              notification.read ? 'text-gray-400' : 'text-white'
+                              notification.read ? "text-gray-400" : "text-white"
                             }`}
                           >
                             {notification.title}
