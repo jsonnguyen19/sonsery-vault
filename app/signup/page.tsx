@@ -61,7 +61,8 @@ export default function SignupPage() {
       }
 
       console.log("[Client Signup] Server session established. Redirecting...");
-      router.push("/dashboard");
+      // Use window.location for full page reload to ensure middleware checks session
+      window.location.href = "/dashboard";
     } catch (err) {
       console.error("[Client Signup] Signup error:", err);
       const errorMessage = err instanceof Error ? err.message : "Signup failed";
@@ -98,7 +99,8 @@ export default function SignupPage() {
       }
 
       console.log("[Client Signup] Server session established. Redirecting...");
-      router.push("/dashboard");
+      // Use window.location for full page reload to ensure middleware checks session
+      window.location.href = "/dashboard";
     } catch (err) {
       console.error("[Client Signup] Google signup error:", err);
       const errorMessage =

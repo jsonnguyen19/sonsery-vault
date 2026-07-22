@@ -48,7 +48,8 @@ export default function LoginPage() {
       }
 
       console.log("[Client Login] Server session established. Redirecting...");
-      router.push("/dashboard");
+      // Use window.location for full page reload to ensure middleware checks session
+      window.location.href = "/dashboard";
     } catch (err) {
       console.error("[Client Login] Login error:", err);
       const errorMessage = err instanceof Error ? err.message : "Login failed";
@@ -85,7 +86,8 @@ export default function LoginPage() {
       }
 
       console.log("[Client Login] Server session established. Redirecting...");
-      router.push("/dashboard");
+      // Use window.location for full page reload to ensure middleware checks session
+      window.location.href = "/dashboard";
     } catch (err) {
       console.error("[Client Login] Google login error:", err);
       const errorMessage =
