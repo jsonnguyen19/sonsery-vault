@@ -67,7 +67,7 @@ service cloud.firestore {
       }
       
       allow get: if allowRead();
-      allow list: if isAuthenticated();
+      allow list: if allowRead();
       allow create: if allowWrite() && isValidCourse();
       allow update: if allowWrite() && isValidCourse();
       allow delete: if allowWrite();

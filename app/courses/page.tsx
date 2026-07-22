@@ -7,7 +7,6 @@ import CourseCard from "@/components/ui/CourseCard";
 import type { Course } from "@/lib/types/course";
 import {
   Search,
-  Filter,
   X,
   ChevronLeft,
   ChevronRight,
@@ -21,7 +20,6 @@ export default function CoursesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("published");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -31,12 +29,7 @@ export default function CoursesPage() {
     setError(null);
 
     try {
-      let q = query(collection(db, "courses"));
-
-      if (statusFilter) {
-        q = query(q, where("status", "==", statusFilter));
-      }
-
+      const q = query(collection(db, "courses"));
       const snapshot = await getDocs(q);
       let allCourses = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -67,24 +60,20 @@ export default function CoursesPage() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, statusFilter, search]);
+  }, [currentPage, search]);
 
   useEffect(() => {
     fetchCourses();
   }, [fetchCourses]);
 
-  // Reset page when filter or search changes
+  // Reset page when search changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [statusFilter, search]);
+  }, [search]);
 
   // Handlers
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
-  };
-
-  const handleStatusChange = (status: string) => {
-    setStatusFilter(status);
   };
 
   const clearSearch = () => {
@@ -98,17 +87,6 @@ export default function CoursesPage() {
     }
   };
 
-  // Memoized status options
-  const statusOptions = useMemo(
-    () => [
-      { value: "published", label: "Published" },
-      { value: "draft", label: "Draft" },
-      { value: "archived", label: "Archived" },
-      { value: "", label: "All Status" },
-    ],
-    [],
-  );
-
   return (
     <main className="min-h-screen bg-gray-950 py-8">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -121,10 +99,9 @@ export default function CoursesPage() {
           </p>
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          {/* Search */}
-          <div className="relative flex-1">
+        {/* Search */}
+        <div className="mb-8">
+          <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
               type="text"
@@ -141,26 +118,6 @@ export default function CoursesPage() {
                 <X className="w-4 h-4" />
               </button>
             )}
-          </div>
-
-          {/* Status Filter */}
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-gray-500 flex-shrink-0" />
-            <div className="flex flex-wrap gap-1.5">
-              {statusOptions.map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => handleStatusChange(option.value)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition ${
-                    statusFilter === option.value
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700"
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
           </div>
         </div>
 
