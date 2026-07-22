@@ -26,24 +26,33 @@ export async function POST(req: NextRequest) {
       const userRef = adminDb.collection("users").doc(decodedToken.uid);
       const userDoc = await userRef.get();
 
-      const userData = {
-        uid: decodedToken.uid,
-        email: decodedToken.email || "",
-        displayName: decodedToken.name || "",
-        photoURL: decodedToken.picture || "",
-        role: "user", // Default role
-        updatedAt: new Date().toISOString(),
-      };
-
+      const now = new Date().toISOString();
+      
       if (!userDoc.exists) {
         // New user
-        userData.createdAt = new Date().toISOString();
+        const userData = {
+          uid: decodedToken.uid,
+          email: decodedToken.email || "",
+          displayName: decodedToken.name || "",
+          photoURL: decodedToken.picture || "",
+          role: "user" as const,
+          createdAt: now,
+          updatedAt: now,
+        };
         await userRef.set(userData);
         console.log(
           `[API Auth Login] Created new user profile for UID: ${decodedToken.uid}`,
         );
       } else {
         // Update existing user
+        const userData = {
+          uid: decodedToken.uid,
+          email: decodedToken.email || "",
+          displayName: decodedToken.name || "",
+          photoURL: decodedToken.picture || "",
+          role: "user" as const,
+          updatedAt: now,
+        };
         await userRef.update(userData);
         console.log(
           `[API Auth Login] Updated user profile for UID: ${decodedToken.uid}`,

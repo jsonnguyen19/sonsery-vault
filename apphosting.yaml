@@ -1,0 +1,79 @@
+# Firebase App Hosting configuration for Next.js 16
+
+# Project ID
+project: sonsery-29348
+
+# Region for hosting
+region: us-central1
+
+# Framework preset
+framework: next
+
+# Build settings
+build:
+  command: pnpm build
+  output: .next
+
+# Runtime environment
+runtime: nodejs20
+
+# Environment variables
+env:
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyDEucn5bBzS1qXyZdzQPHYFxSKj58a942Q
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: sonsery-29348.firebaseapp.com
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: sonsery-29348
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: sonsery-29348.firebasestorage.app
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: 125680036752
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: 1:125680036752:web:3bc86c83084c6744e1e115
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_R2_PUBLIC_URL
+    value: https://pub-059f70f1a69d44ba9e83f592f038b728.r2.dev
+    availability:
+      - BUILD
+      - RUNTIME
+
+# Secrets (set via Firebase Console or CLI)
+secrets:
+  - variable: R2_ACCOUNT_ID
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: R2_ACCESS_KEY_ID
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: R2_SECRET_ACCESS_KEY
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: R2_BUCKET_NAME
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: FIREBASE_SERVICE_ACCOUNT_KEY
+    availability:
+      - BUILD
+      - RUNTIME
