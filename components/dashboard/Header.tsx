@@ -26,7 +26,7 @@ export default function Header() {
 
   return (
     <header className="bg-gray-900 border-b border-gray-800 h-16 flex items-center">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h2 className="text-lg font-semibold text-white">Dashboard</h2>
         </div>
@@ -54,7 +54,9 @@ export default function Header() {
                   <p className="text-sm font-medium text-white truncate">
                     {user?.displayName || "User"}
                   </p>
-                  <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+                  <p className="text-xs text-gray-400 truncate">
+                    {user?.email}
+                  </p>
                 </div>
                 <div className="py-1">
                   <button

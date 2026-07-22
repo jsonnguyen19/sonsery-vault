@@ -54,7 +54,7 @@ export default async function CoursePublicPage({ params }: PageProps) {
   return (
     <main className="min-h-screen bg-gray-950">
       {/* Back button */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition"
@@ -67,7 +67,7 @@ export default async function CoursePublicPage({ params }: PageProps) {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-transparent" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        <div className="relative mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Left: Course Info */}
             <div>
@@ -155,7 +155,7 @@ export default async function CoursePublicPage({ params }: PageProps) {
       </section>
 
       {/* Lessons Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <section className="mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-gray-800/50 rounded-2xl border border-gray-700 overflow-hidden">
           <div className="p-6 border-b border-gray-700">
             <h2 className="text-xl font-bold text-white">Course Content</h2>
@@ -221,7 +221,7 @@ export default async function CoursePublicPage({ params }: PageProps) {
       </section>
 
       {/* Related / CTA Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+      <section className="mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         <div className="bg-gradient-to-r from-blue-600/10 to-purple-600/10 rounded-2xl border border-blue-500/20 p-12 text-center">
           <h3 className="text-2xl font-bold text-white mb-2">
             Ready to master this course?
