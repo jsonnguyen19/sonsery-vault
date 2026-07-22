@@ -1,0 +1,30 @@
+# Compiled JavaScript files
+src/**/*.js
+src/**/*.js.map
+
+# TypeScript v1 declaration files
+typings/
+
+# Node modules
+node_modules/
+
+# Output of 'npm pack'
+*.tgz
+
+# Firebase error logs
+firebase-debug.log
+firebase-debug.*.log
+
+# Firebase emulator storage
+.firebase/
+emulator-data/
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

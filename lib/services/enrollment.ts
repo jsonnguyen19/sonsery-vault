@@ -3,6 +3,7 @@ import type { Enrollment, CreateEnrollmentDTO, CourseProgress, LessonProgress } 
 import type { Course } from '@/lib/types/course';
 import { notificationServer } from './notification.server';
 
+
 export class EnrollmentService {
   private static COLLECTION = 'enrollments';
   private static PROGRESS_COLLECTION = 'courseProgress';
@@ -65,9 +66,7 @@ export class EnrollmentService {
 
       transaction.set(progressRef, initialProgress);
 
-      setTimeout(() => {
-        notificationServer.sendEnrollmentNotification(dto.userId, courseData.title).catch(console.error);
-      }, 0);
+      // Notification will be handled by Cloud Function onEnrollmentCreate
 
       return { id: enrollmentId, ...enrollment } as Enrollment;
     });
