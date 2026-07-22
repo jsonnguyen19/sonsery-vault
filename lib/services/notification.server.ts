@@ -1,7 +1,11 @@
-import { adminDb } from '@/lib/firebase-admin';
-import type { Notification, CreateNotificationDTO, UpdateNotificationDTO } from '@/lib/types/notification';
+import { adminDb } from "@/lib/firebase-admin";
+import type {
+  Notification,
+  CreateNotificationDTO,
+  UpdateNotificationDTO,
+} from "@/lib/types/notification";
 
-const COLLECTION = 'notifications';
+const COLLECTION = "notifications";
 
 // Server-side only functions (use in API routes, server components, server actions)
 export const notificationServer = {
@@ -9,7 +13,7 @@ export const notificationServer = {
     const now = new Date();
     const data = {
       ...dto,
-      type: dto.type || 'info',
+      type: dto.type || "info",
       read: false,
       createdAt: now,
       updatedAt: now,
@@ -33,8 +37,8 @@ export const notificationServer = {
   async getUserNotifications(userId: string): Promise<Notification[]> {
     const snapshot = await adminDb
       .collection(COLLECTION)
-      .where('userId', '==', userId)
-      .orderBy('createdAt', 'desc')
+      .where("userId", "==", userId)
+      .orderBy("createdAt", "desc")
       .get();
 
     return snapshot.docs.map((doc) => ({
@@ -46,7 +50,7 @@ export const notificationServer = {
   async getAllNotifications(): Promise<Notification[]> {
     const snapshot = await adminDb
       .collection(COLLECTION)
-      .orderBy('createdAt', 'desc')
+      .orderBy("createdAt", "desc")
       .get();
 
     return snapshot.docs.map((doc) => ({
@@ -58,8 +62,8 @@ export const notificationServer = {
   async getUnreadCount(userId: string): Promise<number> {
     const snapshot = await adminDb
       .collection(COLLECTION)
-      .where('userId', '==', userId)
-      .where('read', '==', false)
+      .where("userId", "==", userId)
+      .where("read", "==", false)
       .get();
 
     return snapshot.size;
@@ -82,8 +86,8 @@ export const notificationServer = {
   async markAllAsRead(userId: string): Promise<void> {
     const snapshot = await adminDb
       .collection(COLLECTION)
-      .where('userId', '==', userId)
-      .where('read', '==', false)
+      .where("userId", "==", userId)
+      .where("read", "==", false)
       .get();
 
     const batch = adminDb.batch();
@@ -101,7 +105,7 @@ export const notificationServer = {
   async deleteAll(userId: string): Promise<void> {
     const snapshot = await adminDb
       .collection(COLLECTION)
-      .where('userId', '==', userId)
+      .where("userId", "==", userId)
       .get();
 
     const batch = adminDb.batch();
@@ -115,10 +119,10 @@ export const notificationServer = {
   async sendEnrollmentNotification(userId: string, courseTitle: string) {
     return this.create({
       userId,
-      title: '🎉 Course Enrolled!',
+      title: "🎉 Course Enrolled!",
       message: `You have successfully enrolled in "${courseTitle}". Start learning now!`,
-      type: 'success',
-      link: '/dashboard/progress',
+      type: "success",
+      link: "/dashboard/progress",
     });
   },
 
@@ -126,7 +130,7 @@ export const notificationServer = {
     userId: string,
     courseTitle: string,
     lessonTitle: string,
-    progress: number
+    progress: number,
   ) {
     const message =
       progress === 100
@@ -135,10 +139,10 @@ export const notificationServer = {
 
     return this.create({
       userId,
-      title: progress === 100 ? 'Course Completed! 🎊' : 'Lesson Completed ✅',
+      title: progress === 100 ? "Course Completed! 🎊" : "Lesson Completed ✅",
       message,
-      type: progress === 100 ? 'success' : 'info',
-      link: '/dashboard/progress',
+      type: progress === 100 ? "success" : "info",
+      link: "/dashboard/progress",
     });
   },
 };

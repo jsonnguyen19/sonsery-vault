@@ -1,4 +1,4 @@
-import { db } from '@/lib/firebase';
+import { db } from "@/lib/firebase";
 import {
   collection,
   query,
@@ -10,10 +10,14 @@ import {
   onSnapshot,
   writeBatch,
   addDoc,
-} from 'firebase/firestore';
-import type { Notification, CreateNotificationDTO, UpdateNotificationDTO } from '@/lib/types/notification';
+} from "firebase/firestore";
+import type {
+  Notification,
+  CreateNotificationDTO,
+  UpdateNotificationDTO,
+} from "@/lib/types/notification";
 
-const COLLECTION = 'notifications';
+const COLLECTION = "notifications";
 
 // Convert Firestore data to Notification type
 const toNotification = (doc: any): Notification => {
@@ -37,13 +41,15 @@ export const notificationClient = {
   async create(dto: CreateNotificationDTO): Promise<Notification> {
     const data = {
       ...dto,
-      type: dto.type || 'info',
+      type: dto.type || "info",
       read: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
     const docRef = await addDoc(collection(db, COLLECTION), data);
-    const snapshot = await getDocs(query(collection(db, COLLECTION), where('__name__', '==', docRef.id)));
+    const snapshot = await getDocs(
+      query(collection(db, COLLECTION), where("__name__", "==", docRef.id)),
+    );
     return toNotification(snapshot.docs[0]);
   },
 
@@ -66,10 +72,7 @@ export const notificationClient = {
 
   // Get all notifications for a user - no orderBy to avoid index
   async getUserNotifications(userId: string): Promise<Notification[]> {
-    const q = query(
-      collection(db, COLLECTION),
-      where('userId', '==', userId)
-    );
+    const q = query(collection(db, COLLECTION), where("userId", "==", userId));
     const snapshot = await getDocs(q);
     const notifications = snapshot.docs.map(toNotification);
     return notifications.sort(sortByDate);
@@ -79,8 +82,8 @@ export const notificationClient = {
   async getUnreadCount(userId: string): Promise<number> {
     const q = query(
       collection(db, COLLECTION),
-      where('userId', '==', userId),
-      where('read', '==', false)
+      where("userId", "==", userId),
+      where("read", "==", false),
     );
     const snapshot = await getDocs(q);
     return snapshot.size;
@@ -99,8 +102,8 @@ export const notificationClient = {
   async markAllAsRead(userId: string): Promise<void> {
     const q = query(
       collection(db, COLLECTION),
-      where('userId', '==', userId),
-      where('read', '==', false)
+      where("userId", "==", userId),
+      where("read", "==", false),
     );
     const snapshot = await getDocs(q);
 
@@ -118,10 +121,7 @@ export const notificationClient = {
 
   // Delete all notifications for a user
   async deleteAll(userId: string): Promise<void> {
-    const q = query(
-      collection(db, COLLECTION),
-      where('userId', '==', userId)
-    );
+    const q = query(collection(db, COLLECTION), where("userId", "==", userId));
     const snapshot = await getDocs(q);
 
     const batch = writeBatch(db);
@@ -134,12 +134,9 @@ export const notificationClient = {
   // Subscribe to realtime notifications for a user - no orderBy
   subscribeToNotifications(
     userId: string,
-    callback: (notifications: Notification[]) => void
+    callback: (notifications: Notification[]) => void,
   ) {
-    const q = query(
-      collection(db, COLLECTION),
-      where('userId', '==', userId)
-    );
+    const q = query(collection(db, COLLECTION), where("userId", "==", userId));
     return onSnapshot(q, (snapshot) => {
       const notifications = snapshot.docs.map(toNotification);
       callback(notifications.sort(sortByDate));
@@ -147,14 +144,11 @@ export const notificationClient = {
   },
 
   // Subscribe to unread count for a user
-  subscribeToUnreadCount(
-    userId: string,
-    callback: (count: number) => void
-  ) {
+  subscribeToUnreadCount(userId: string, callback: (count: number) => void) {
     const q = query(
       collection(db, COLLECTION),
-      where('userId', '==', userId),
-      where('read', '==', false)
+      where("userId", "==", userId),
+      where("read", "==", false),
     );
     return onSnapshot(q, (snapshot) => {
       callback(snapshot.size);
@@ -163,7 +157,7 @@ export const notificationClient = {
 
   // Subscribe to all notifications (admin) - no orderBy
   subscribeToAllNotifications(
-    callback: (notifications: Notification[]) => void
+    callback: (notifications: Notification[]) => void,
   ) {
     const q = query(collection(db, COLLECTION));
     return onSnapshot(q, (snapshot) => {

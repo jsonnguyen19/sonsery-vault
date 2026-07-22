@@ -2,12 +2,12 @@ export interface Enrollment {
   id: string;
   userId: string;
   courseId: string;
-  status: 'active' | 'completed' | 'cancelled';
+  status: "active" | "completed" | "cancelled";
   enrolledAt: string;
   completedAt?: string;
   progress: number; // 0-100
   lastAccessedAt: string;
-  paymentStatus: 'pending' | 'paid' | 'free';
+  paymentStatus: "pending" | "paid" | "free";
   paymentAmount?: number;
   paymentId?: string;
   certificateIssued: boolean;
@@ -17,7 +17,7 @@ export interface Enrollment {
 export interface CreateEnrollmentDTO {
   userId: string;
   courseId: string;
-  paymentStatus?: 'pending' | 'paid' | 'free';
+  paymentStatus?: "pending" | "paid" | "free";
   paymentAmount?: number;
   paymentId?: string;
 }

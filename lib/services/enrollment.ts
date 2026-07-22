@@ -1,43 +1,47 @@
-import { adminDb } from '@/lib/firebase-admin';
-import type { Enrollment, CreateEnrollmentDTO, CourseProgress, LessonProgress } from '@/lib/types/enrollment';
-import type { Course } from '@/lib/types/course';
-import { notificationServer } from './notification.server';
-
+import { adminDb } from "@/lib/firebase-admin";
+import type {
+  Enrollment,
+  CreateEnrollmentDTO,
+  CourseProgress,
+  LessonProgress,
+} from "@/lib/types/enrollment";
+import type { Course } from "@/lib/types/course";
+import { notificationServer } from "./notification.server";
 
 export class EnrollmentService {
-  private static COLLECTION = 'enrollments';
-  private static PROGRESS_COLLECTION = 'courseProgress';
+  private static COLLECTION = "enrollments";
+  private static PROGRESS_COLLECTION = "courseProgress";
 
   static async enrollUser(dto: CreateEnrollmentDTO): Promise<Enrollment> {
     const db = adminDb;
     const enrollmentId = `${dto.userId}_${dto.courseId}`;
     const enrollmentRef = db.collection(this.COLLECTION).doc(enrollmentId);
-    const courseRef = db.collection('courses').doc(dto.courseId);
+    const courseRef = db.collection("courses").doc(dto.courseId);
 
     return await db.runTransaction(async (transaction) => {
       const enrollmentDoc = await transaction.get(enrollmentRef);
       if (enrollmentDoc.exists) {
-        throw new Error('Already enrolled in this course');
+        throw new Error("Already enrolled in this course");
       }
 
       const courseDoc = await transaction.get(courseRef);
       if (!courseDoc.exists) {
-        throw new Error('Course not found');
+        throw new Error("Course not found");
       }
 
       const courseData = courseDoc.data() as Course;
-      if (courseData.status !== 'published') {
-        throw new Error('Course is not published');
+      if (courseData.status !== "published") {
+        throw new Error("Course is not published");
       }
 
       const isFree = !courseData.price || courseData.price === 0;
-      const paymentStatus = dto.paymentStatus || (isFree ? 'free' : 'pending');
+      const paymentStatus = dto.paymentStatus || (isFree ? "free" : "pending");
 
       const now = new Date().toISOString();
-      const enrollment: Omit<Enrollment, 'id'> = {
+      const enrollment: Omit<Enrollment, "id"> = {
         userId: dto.userId,
         courseId: dto.courseId,
-        status: 'active',
+        status: "active",
         enrolledAt: now,
         progress: 0,
         lastAccessedAt: now,
@@ -48,12 +52,14 @@ export class EnrollmentService {
 
       // Only add paymentId if it exists
       if (dto.paymentId) {
-        (enrollment as any).paymentId = dto.paymentId;
+        enrollment.paymentId = dto.paymentId;
       }
 
       transaction.set(enrollmentRef, enrollment);
 
-      const progressRef = db.collection(this.PROGRESS_COLLECTION).doc(enrollmentId);
+      const progressRef = db
+        .collection(this.PROGRESS_COLLECTION)
+        .doc(enrollmentId);
       const initialProgress: CourseProgress = {
         userId: dto.userId,
         courseId: dto.courseId,
@@ -77,30 +83,32 @@ export class EnrollmentService {
     courseId: string,
     lessonId: string,
     completed: boolean,
-    timeSpent?: number
+    timeSpent?: number,
   ): Promise<CourseProgress> {
     const db = adminDb;
     const enrollmentId = `${userId}_${courseId}`;
-    const progressRef = db.collection(this.PROGRESS_COLLECTION).doc(enrollmentId);
+    const progressRef = db
+      .collection(this.PROGRESS_COLLECTION)
+      .doc(enrollmentId);
     const enrollmentRef = db.collection(this.COLLECTION).doc(enrollmentId);
-    const courseRef = db.collection('courses').doc(courseId);
+    const courseRef = db.collection("courses").doc(courseId);
 
     return await db.runTransaction(async (transaction) => {
       const enrollmentDoc = await transaction.get(enrollmentRef);
       if (!enrollmentDoc.exists) {
-        throw new Error('User not enrolled in this course');
+        throw new Error("User not enrolled in this course");
       }
 
       const courseDoc = await transaction.get(courseRef);
       if (!courseDoc.exists) {
-        throw new Error('Course not found');
+        throw new Error("Course not found");
       }
 
       const courseData = courseDoc.data() as Course;
       const totalLessons = courseData.lessons?.length || 0;
 
       if (totalLessons === 0) {
-        throw new Error('Course has no lessons');
+        throw new Error("Course has no lessons");
       }
 
       const progressDoc = await transaction.get(progressRef);
@@ -132,45 +140,53 @@ export class EnrollmentService {
       progress.lessons[lessonId] = lessonProgress;
       progress.lastUpdated = now;
 
-      const completedLessons = Object.values(progress.lessons).filter((l) => l.completed).length;
-      progress.overallProgress = Math.round((completedLessons / totalLessons) * 100);
+      const completedLessons = Object.values(progress.lessons).filter(
+        (l) => l.completed,
+      ).length;
+      progress.overallProgress = Math.round(
+        (completedLessons / totalLessons) * 100,
+      );
 
       if (completedLessons === totalLessons && totalLessons > 0) {
         progress.isCompleted = true;
         progress.completedAt = now;
 
         transaction.update(enrollmentRef, {
-          status: 'completed',
+          status: "completed",
           completedAt: now,
           progress: 100,
           lastAccessedAt: now,
         });
 
         setTimeout(() => {
-          notificationServer.sendLessonCompletionNotification(
-            userId,
-            courseData.title,
-            'all lessons',
-            100
-          ).catch(console.error);
+          notificationServer
+            .sendLessonCompletionNotification(
+              userId,
+              courseData.title,
+              "all lessons",
+              100,
+            )
+            .catch(console.error);
         }, 0);
       } else {
         transaction.update(enrollmentRef, {
           progress: progress.overallProgress,
           lastAccessedAt: now,
-          status: 'active',
+          status: "active",
         });
 
         if (completed) {
           const lesson = courseData.lessons?.find((l) => l.id === lessonId);
           if (lesson) {
             setTimeout(() => {
-              notificationServer.sendLessonCompletionNotification(
-                userId,
-                courseData.title,
-                lesson.title,
-                progress.overallProgress
-              ).catch(console.error);
+              notificationServer
+                .sendLessonCompletionNotification(
+                  userId,
+                  courseData.title,
+                  lesson.title,
+                  progress.overallProgress,
+                )
+                .catch(console.error);
             }, 0);
           }
         }
@@ -181,9 +197,15 @@ export class EnrollmentService {
     });
   }
 
-  static async getEnrollment(userId: string, courseId: string): Promise<Enrollment | null> {
+  static async getEnrollment(
+    userId: string,
+    courseId: string,
+  ): Promise<Enrollment | null> {
     const enrollmentId = `${userId}_${courseId}`;
-    const doc = await adminDb.collection(this.COLLECTION).doc(enrollmentId).get();
+    const doc = await adminDb
+      .collection(this.COLLECTION)
+      .doc(enrollmentId)
+      .get();
     if (!doc.exists) return null;
     return { id: doc.id, ...doc.data() } as Enrollment;
   }
@@ -192,33 +214,65 @@ export class EnrollmentService {
     // Simplified query without orderBy to avoid composite index requirement
     const snapshot = await adminDb
       .collection(this.COLLECTION)
-      .where('userId', '==', userId)
+      .where("userId", "==", userId)
       .get();
-    
+
     const enrollments = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     })) as Enrollment[];
-    
+
     // Sort in memory instead of using orderBy
-    return enrollments.sort((a, b) => 
-      new Date(b.enrolledAt).getTime() - new Date(a.enrolledAt).getTime()
+    return enrollments.sort(
+      (a, b) =>
+        new Date(b.enrolledAt).getTime() - new Date(a.enrolledAt).getTime(),
     );
   }
 
-  static async getCourseProgress(userId: string, courseId: string): Promise<CourseProgress | null> {
+  static async getCourseProgress(
+    userId: string,
+    courseId: string,
+  ): Promise<CourseProgress | null> {
     const enrollmentId = `${userId}_${courseId}`;
-    const doc = await adminDb.collection(this.PROGRESS_COLLECTION).doc(enrollmentId).get();
+    const doc = await adminDb
+      .collection(this.PROGRESS_COLLECTION)
+      .doc(enrollmentId)
+      .get();
     if (!doc.exists) return null;
-    return { id: doc.id, ...doc.data() } as CourseProgress;
+    const data = doc.data();
+    if (!data) return null;
+    return {
+      id: doc.id,
+      userId: data.userId,
+      courseId: data.courseId,
+      lessons: data.lessons || {},
+      overallProgress: data.overallProgress || 0,
+      lastUpdated: data.lastUpdated,
+      startedAt: data.startedAt,
+      isCompleted: data.isCompleted || false,
+      completedAt: data.completedAt,
+    } as CourseProgress;
   }
 
   static async getAllUserProgress(userId: string): Promise<CourseProgress[]> {
     const snapshot = await adminDb
       .collection(this.PROGRESS_COLLECTION)
-      .where('userId', '==', userId)
+      .where("userId", "==", userId)
       .get();
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as CourseProgress[];
+    return snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        userId: data.userId,
+        courseId: data.courseId,
+        lessons: data.lessons || {},
+        overallProgress: data.overallProgress || 0,
+        lastUpdated: data.lastUpdated,
+        startedAt: data.startedAt,
+        isCompleted: data.isCompleted || false,
+        completedAt: data.completedAt,
+      } as CourseProgress;
+    });
   }
 
   static async getEnrollmentStats(userId: string): Promise<{
@@ -229,40 +283,51 @@ export class EnrollmentService {
   }> {
     const enrollments = await this.getUserEnrollments(userId);
     const total = enrollments.length;
-    const completed = enrollments.filter((e) => e.status === 'completed').length;
-    const inProgress = enrollments.filter((e) => e.status === 'active').length;
+    const completed = enrollments.filter(
+      (e) => e.status === "completed",
+    ).length;
+    const inProgress = enrollments.filter((e) => e.status === "active").length;
     const totalProgress = enrollments.reduce((sum, e) => sum + e.progress, 0);
     const overallProgress = total > 0 ? Math.round(totalProgress / total) : 0;
     return { total, completed, inProgress, overallProgress };
   }
 
-  static async cancelEnrollment(userId: string, courseId: string): Promise<void> {
+  static async cancelEnrollment(
+    userId: string,
+    courseId: string,
+  ): Promise<void> {
     const enrollmentId = `${userId}_${courseId}`;
     const enrollmentRef = adminDb.collection(this.COLLECTION).doc(enrollmentId);
-    const progressRef = adminDb.collection(this.PROGRESS_COLLECTION).doc(enrollmentId);
+    const progressRef = adminDb
+      .collection(this.PROGRESS_COLLECTION)
+      .doc(enrollmentId);
 
     await adminDb.runTransaction(async (transaction) => {
       const enrollmentDoc = await transaction.get(enrollmentRef);
       if (!enrollmentDoc.exists) {
-        throw new Error('Enrollment not found');
+        throw new Error("Enrollment not found");
       }
       transaction.update(enrollmentRef, {
-        status: 'cancelled',
+        status: "cancelled",
         lastAccessedAt: new Date().toISOString(),
       });
       transaction.delete(progressRef);
     });
   }
 
-  static async hasLessonAccess(userId: string, courseId: string, lessonId: string): Promise<boolean> {
+  static async hasLessonAccess(
+    userId: string,
+    courseId: string,
+    lessonId: string,
+  ): Promise<boolean> {
     const enrollment = await this.getEnrollment(userId, courseId);
     if (!enrollment) {
-      const courseDoc = await adminDb.collection('courses').doc(courseId).get();
+      const courseDoc = await adminDb.collection("courses").doc(courseId).get();
       if (!courseDoc.exists) return false;
       const courseData = courseDoc.data() as Course;
       const lesson = courseData.lessons?.find((l) => l.id === lessonId);
       return lesson?.isFreePreview || false;
     }
-    return enrollment.status === 'active' || enrollment.status === 'completed';
+    return enrollment.status === "active" || enrollment.status === "completed";
   }
 }
