@@ -29,7 +29,7 @@ export default function CoursesPage() {
     setError(null);
 
     try {
-      const q = query(collection(db, "courses"));
+      const q = query(collection(db, "courses"), where("status", "==", "published"));
       const snapshot = await getDocs(q);
       let allCourses = snapshot.docs.map((doc) => ({
         id: doc.id,

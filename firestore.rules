@@ -48,9 +48,7 @@ service cloud.firestore {
     // ============ COURSES COLLECTION ============
     match /courses/{courseId} {
       function allowRead() {
-        return !isAuthenticated() ? 
-          (resource.data.status == 'published') :
-          (isAdmin() || resource.data.status == 'published');
+        return true;
       }
       
       function allowWrite() {
